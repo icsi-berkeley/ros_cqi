@@ -33,13 +33,12 @@ class DarwinInterface:
         rospy.loginfo("Creating joint command publishers")
         self._pub_joints={}
         for j in self.joints:
-            p=rospy.Publisher(self.ns+j+"_position_controller/command",Float64)
+            p=rospy.Publisher(self.ns+j+"_position_controller/command",Float64,queue_size=1)
             self._pub_joints[j]=p
         
         rospy.sleep(1)
         
-        self._pub_cmd_vel=rospy.Publisher(ns+"cmd_vel",Twist)
-        
+        self._pub_cmd_vel=rospy.Publisher(ns+"cmd_vel",Twist,queue_size=1)
 
     def set_walk_velocity(self,x,y,t):
         msg=Twist()
@@ -79,11 +78,12 @@ class DarwinInterface:
             self.set_angles(angles)
             r.sleep()
 
-    def walkToPose(self,destination=Pose()):
+    def walkToPose(self,destination):
         print " I am at "
         print self.pose
         print " I must go to "
         print destination
+        
         print " I have to go this way:"
 
         locationPos = np.array([self.pose.position.x,self.pose.position.y,self.pose.position.z])
@@ -91,11 +91,88 @@ class DarwinInterface:
         delta = destinationPos - locationPos
         print delta
 
-        locationPos2d = np.array([self.pose.position.x,self.pose.position.y])
         destinationPos2d = np.array([destination.position.x,destination.position.y])
-        delta = destinationPo2d - locationPos2d
 
+        euler = eulerFromQuarternion(self.pose)
+        heading = euler[2]
+
+        print " My heading is " + str(heading/math.pi*180) + " deg."
+
+        locationPos2d = [self.pose.position.x,self.pose.position.y]
+
+        # destAng = angle_between(locationPos2d,destinationPos2d)        
+        destAng = angle_between2d(destinationPos2d,locationPos2d)
+
+
+        print " My destination is at " + str(destAng/math.pi*180)  + " deg."
+
+        turnAng = destAng - heading
+
+        if turnAng > math.pi:
+            turnAng -= (2*math.pi)
+        if turnAng < -math.pi:
+            turnAng += (2*math.pi)
+
+        print " I have to turn by " + str(turnAng/math.pi*180) + " deg."
+
+        angThreshold = 0.1
+        distThreshold = 0.2
+
+        while True:
+            heading = eulerFromQuarternion(self.pose)[2]
+            # # locationPos2d = np.array([self.pose.position.x,self.pose.position.y])        
+            locationPos2d = [self.pose.position.x,self.pose.position.y]
+            destAng = angle_between2d(destinationPos2d,locationPos2d)
+
+            turnAng = destAng - heading
+            if turnAng > math.pi:
+                turnAng -= (2*math.pi)
+            if turnAng < -math.pi:
+                turnAng += (2*math.pi)
+
+            angAbs = abs(turnAng)
+            if turnAng < 0 :
+                turnDir = -1
+            else:
+                turnDir = 1
             
+            turnV = angAbs / math.pi
+            maxTurnV = 0.5
+            minTurnV = 0.00
+            turnV = max(min(math.pow(turnV,1)/2,maxTurnV),minTurnV)
+            # turnV = min(angAbs,0.5)
+            angV = turnV * turnDir
+
+            distAbs = abs(np.linalg.norm(destinationPos2d - locationPos2d))
+
+            fwdV = min(math.pow(distAbs,1.5),1)
+            
+            if angAbs > (math.pi/2):
+                fwdV = 0
+            else:
+                fwdV *= (1-(angAbs/(math.pi/2)))
+
+            if (abs(turnAng) < angThreshold):
+                angV = 0
+
+            if (abs(distAbs) < distThreshold):
+                fwdV = 0
+
+            print "heading: " + str(heading) + " -- destAng: " + str(destAng) + " -- turnAng: " + str(turnAng) + " -- angV: " + str (angV) + " -- dist: " + str(distAbs) + " -- fwdV: " + str(fwdV)
+            # break
+            
+            self.set_walk_velocity(fwdV,0,angV)
+
+            if (abs(turnAng) < angThreshold and abs(distAbs) < distThreshold):
+                self.set_walk_velocity(0,0,0)
+                break
+
+            rospy.sleep(0.2)
+
+        # print delta
+
+
+        
 
         
     def _cb_modeldata(self,msg):
@@ -105,6 +182,18 @@ class DarwinInterface:
             if item != "darwin":
                 continue
             self.pose = msg.pose[pos]   
+
+def eulerFromQuarternion(pose):
+    quaternion = (
+        pose.orientation.x,
+        pose.orientation.y,
+        pose.orientation.z,
+        pose.orientation.w)
+    # roll = euler[0]
+    # pitch = euler[1]
+    # yaw = euler[2]
+    euler = tf.transformations.euler_from_quaternion(quaternion)
+    return euler
 
 def interpolate(anglesa,anglesb,coefa):
     z={}
@@ -121,6 +210,13 @@ def get_distance(anglesa,anglesb):
         d+=abs(anglesb[j]-anglesa[j])
     d/=len(joints)
     return d
+
+def angle_between2d(a,b):
+    dx = a[0] - b[0]
+    dy = a[1] - b[1]
+    rads = math.atan2(dy,dx)
+    # rads %= 2*math.pi
+    return rads
 
 def unit_vector(vector):
     """ Returns the unit vector of the vector.  """

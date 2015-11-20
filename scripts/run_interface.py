@@ -2,17 +2,18 @@
 import rospy
 import inspect
 
-from darwin_interface.darwin_interface import DarwinInterface
-# from darwin_interface.gazebo_model import ModelLocationInterface
+from ros_cqi.darwin_interface import DarwinInterface
+from ros_cqi.gazebo_model import ModelLocationInterface
 from geometry_msgs.msg import Twist,Pose,Quaternion,Point
 
 if __name__=="__main__":
     rospy.init_node("darwin_interface")
     
     rospy.loginfo("Instantiating Darwin Interface Client")
-    di=DarwinInterface()
-    # rospy.loginfo("Instantiating Model Location Interface Client")
-    # mli = ModelLocationInterface()
+    di =DarwinInterface()
+    rospy.loginfo("Instantiating Model Location Interface Client")
+    mli = ModelLocationInterface()
+    
     
     rospy.sleep(1)
 
@@ -26,6 +27,15 @@ if __name__=="__main__":
     destination.position.x = 1
     destination.position.y = 1
     destination.position.z = 1
+
+    print mli
+
+    for item,pose in mli.modelPoses.items():
+        # print "Found " + item + " at "
+        # print pose
+        if item == "beer":
+            destination = pose
+            print "There is beer!!!"
 
     di.walkToPose(destination)
 

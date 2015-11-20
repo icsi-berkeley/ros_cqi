@@ -16,27 +16,27 @@ class ModelLocationInterface:
     
     def __init__(self,ns="/gazebo/"):
         self.ns=ns
+        self.modelPoses = {}
         
-        while True:
-            self._sub_model=rospy.Subscriber(ns+"model_states",ModelStates,self._cb_modeldata,queue_size=1)
-            rospy.sleep(5)
+        # while True:
+        self._sub_model=rospy.Subscriber(ns+"model_states",ModelStates,self._cb_modeldata,queue_size=1)
+            # rospy.sleep(5)
 
         
     def _cb_modeldata(self,msg):
-        print "model data:"
-        modelLocations = {}
+        # print "model data:"
         for pos,item in enumerate(msg.name):            
             # print "for " + item
             # print msg.twist[pos].linear
             # raw_input()
             # modelLocations[item] = msg.twist[pos]
-            modelLocations[item] = msg.pose[pos]
+            self.modelPoses[item] = msg.pose[pos]
             # modelLocations[item]["linear"] = msg.pose[pos].linear
             # modelLocations[item]["angular"] = msg.pose[pos].angular
         # print "locations"
-        print modelLocations
+        # print modelLocations
         # print "\n"
-        self._sub_model.unregister()
+        # self._sub_model.unregister()
 
         
     
