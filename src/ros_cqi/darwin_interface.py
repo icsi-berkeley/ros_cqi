@@ -9,6 +9,8 @@ from geometry_msgs.msg import Twist,Pose
 from gazebo_msgs.msg import ModelStates,LinkStates
 import tf
 import numpy as np
+from std_msgs.msg import *
+from ros_cqi.gazebo_model import ModelLocationInterface
 
 class DarwinInterface:
     """
@@ -39,6 +41,31 @@ class DarwinInterface:
         rospy.sleep(1)
         
         self._pub_cmd_vel=rospy.Publisher(ns+"cmd_vel",Twist,queue_size=1)
+
+        rospy.loginfo("Listening for commands")
+        self._sub_nlu=rospy.Subscriber("/cqi/command",String,self.cb_nlu,queue_size=5)
+
+        # self.testBeer()
+        
+
+        
+    def cb_nlu(self,msg):
+
+        print "received msg:"
+        print msg
+        commandName = msg.data.split("(")[0]
+        commandArgs = msg.data[:-1].split("(")[1].split(",")
+        self.execCommand(commandName,commandArgs)
+
+    def execCommand(self,commandName,commandArgs):
+        if commandName == "moveToXY":
+            x = float(commandArgs[0])
+            y = float(commandArgs[1])
+            destination = Pose()    
+            destination.position.x = x
+            destination.position.y = y
+            self.walkToPose(destination)
+        
 
     def set_walk_velocity(self,x,y,t):
         msg=Twist()
@@ -79,24 +106,25 @@ class DarwinInterface:
             r.sleep()
 
     def walkToPose(self,destination):
-        print " I am at "
-        print self.pose
-        print " I must go to "
-        print destination
+        rospy.loginfo("Staggering to given destination")
+        # print " I am at "
+        # print self.pose
+        # print " I must go to "
+        # print destination
         
-        print " I have to go this way:"
+        # print " I have to go this way:"
 
         locationPos = np.array([self.pose.position.x,self.pose.position.y,self.pose.position.z])
         destinationPos = np.array([destination.position.x,destination.position.y,destination.position.z])
         delta = destinationPos - locationPos
-        print delta
+        # print delta
 
         destinationPos2d = np.array([destination.position.x,destination.position.y])
 
         euler = eulerFromQuarternion(self.pose)
         heading = euler[2]
 
-        print " My heading is " + str(heading/math.pi*180) + " deg."
+        # print " My heading is " + str(heading/math.pi*180) + " deg."
 
         locationPos2d = [self.pose.position.x,self.pose.position.y]
 
@@ -104,7 +132,7 @@ class DarwinInterface:
         destAng = angle_between2d(destinationPos2d,locationPos2d)
 
 
-        print " My destination is at " + str(destAng/math.pi*180)  + " deg."
+        # print " My destination is at " + str(destAng/math.pi*180)  + " deg."
 
         turnAng = destAng - heading
 
@@ -113,10 +141,10 @@ class DarwinInterface:
         if turnAng < -math.pi:
             turnAng += (2*math.pi)
 
-        print " I have to turn by " + str(turnAng/math.pi*180) + " deg."
+        # print " I have to turn by " + str(turnAng/math.pi*180) + " deg."
 
         angThreshold = 0.1
-        distThreshold = 0.2
+        distThreshold = 0.4
 
         while True:
             heading = eulerFromQuarternion(self.pose)[2]
@@ -158,21 +186,19 @@ class DarwinInterface:
             if (abs(distAbs) < distThreshold):
                 fwdV = 0
 
-            print "heading: " + str(heading) + " -- destAng: " + str(destAng) + " -- turnAng: " + str(turnAng) + " -- angV: " + str (angV) + " -- dist: " + str(distAbs) + " -- fwdV: " + str(fwdV)
+            # print "heading: " + str(heading) + " -- destAng: " + str(destAng) + " -- turnAng: " + str(turnAng) + " -- angV: " + str (angV) + " -- dist: " + str(distAbs) + " -- fwdV: " + str(fwdV)
             # break
             
             self.set_walk_velocity(fwdV,0,angV)
 
             if (abs(turnAng) < angThreshold and abs(distAbs) < distThreshold):
                 self.set_walk_velocity(0,0,0)
+                rospy.loginfo("Arrived at destination")
                 break
 
             rospy.sleep(0.2)
 
         # print delta
-
-
-        
 
         
     def _cb_modeldata(self,msg):
@@ -181,7 +207,28 @@ class DarwinInterface:
         for pos,item in enumerate(msg.name):            
             if item != "darwin":
                 continue
-            self.pose = msg.pose[pos]   
+            self.pose = msg.pose[pos]  
+
+    def testBeer(self):
+
+        destination = Pose()    
+        destination.orientation.x = 1
+        destination.orientation.y = 1
+        destination.orientation.z = 1
+        destination.orientation.w = 1
+        destination.position.x = 1
+        destination.position.y = 1
+        destination.position.z = 1
+        rospy.loginfo("Instantiating Model Location Interface Client")
+        mli = ModelLocationInterface()
+        rospy.sleep(1)
+        for item,pose in mli.modelPoses.items():
+            print item
+            if item == "beer":
+                destination = pose
+                print "There is beer!!!"
+
+        self.walkToPose(destination) 
 
 def eulerFromQuarternion(pose):
     quaternion = (
