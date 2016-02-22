@@ -15,47 +15,48 @@ from ros_cqi.robot_interface import RobotInterface
 import os
 
 
-class DarwinInterface(RobotInterface, object):
+class PR2Interface(RobotInterface, object):
     """
     Client ROS class for manipulating Darwin OP in Gazebo
     """
     
     def __init__(self):
-        super(DarwinInterface, self).__init__()
-        self.name = "darwin"
+        super(PR2Interface, self).__init__()
+        self.name = "pr2"
         self.possible_comands = {"moveToXY": ["x","y"],
                                  "moveToPose": ["x","y","ang(rad)"],
                                  "graspObject": ["label"],
                                  "grasp": [],
                                  "release": [],
-                                 "raise_arms": [],
-                                 "spread_arms": []
-                                 }
+                                 "raise_arms": []}
         self.pose = Pose()
-        rospy.loginfo("Waiting for joints to be populated...")
-        while not rospy.is_shutdown():
-            if self.joints is not None: break
-            rospy.sleep(0.1)            
-            rospy.loginfo("Waiting for joints to be populated...")
-        rospy.loginfo("Joints populated")
+        self.v_factor = 1
+        # rospy.loginfo("Waiting for joints to be populated...")
+        # while not rospy.is_shutdown():
+        #     if self.joints is not None: break
+        #     rospy.sleep(0.1)
+        #     rospy.loginfo("Waiting for joints to be populated...")
+        # rospy.loginfo("Joints populated")
         
         
-        rospy.loginfo("Creating joint command publishers")
-        self._pub_joints={}
-        for j in self.joints:
-            p=rospy.Publisher("/darwin/"+j+"_position_controller/command",Float64,queue_size=1)
-            self._pub_joints[j]=p
+        # rospy.loginfo("Creating joint command publishers")
+        # self._pub_joints={}
+        # for j in self.joints:
+        #     p=rospy.Publisher("/darwin/"+j+"_position_controller/command",Float64,queue_size=1)
+        #     self._pub_joints[j]=p
 
-        self._pub_cmd_vel = rospy.Publisher("/darwin/cmd_vel", Twist, queue_size=1)
+        self._pub_cmd_vel = rospy.Publisher("/base_controller/command", Twist, queue_size=1)
 
     def _subscribe_joints(self):
-        self._sub_joints = rospy.Subscriber("/darwin/joint_states", JointState, self._cb_joints, queue_size=1)
+        rospy.logwarn("PR2 subscribing to joint states not yet implemented.")
+        # self._sub_joints = rospy.Subscriber("/darwin/joint_states", JointState, self._cb_joints, queue_size=1)
 
-    def set_walk_velocity(self, x, y, t):
+    def set_move_velocity(self, x, y, t):
+        v_factor = self.v_factor
         msg = Twist()
-        msg.linear.x = x
-        msg.linear.y = y
-        msg.angular.z = t
+        msg.linear.x = x * v_factor
+        msg.linear.y = y * v_factor
+        msg.angular.z = t * v_factor
         self._pub_cmd_vel.publish(msg)
         
     def _cb_joints(self, msg):
@@ -64,30 +65,30 @@ class DarwinInterface(RobotInterface, object):
         self.angles = msg.position
         
     
-    def get_angles(self):
-        if self.joints is None: return None
-        if self.angles is None: return None
-        return dict(zip(self.joints,self.angles))
+    # def get_angles(self):
+    #     if self.joints is None: return None
+    #     if self.angles is None: return None
+    #     return dict(zip(self.joints,self.angles))
 
-    def set_angles(self,angles):
-        for j,v in angles.items():
-            if j not in self.joints:
-                rospy.logerror("Invalid joint name "+j)
-                continue
-            self._pub_joints[j].publish(v)
-
-    def set_angles_slow(self,stop_angles,delay=2):
-        start_angles=self.get_angles()
-        start=time.time()
-        stop=start+delay
-        r=rospy.Rate(100)
-        while not rospy.is_shutdown():
-            t=time.time()
-            if t>stop: break
-            ratio=(t-start)/delay            
-            angles=RobotInterface.interpolate(stop_angles,start_angles,ratio)
-            self.set_angles(angles)
-            r.sleep()
+    # def set_angles(self,angles):
+    #     for j,v in angles.items():
+    #         if j not in self.joints:
+    #             rospy.logerror("Invalid joint name "+j)
+    #             continue
+    #         self._pub_joints[j].publish(v)
+    #
+    # def set_angles_slow(self,stop_angles,delay=2):
+    #     start_angles=self.get_angles()
+    #     start=time.time()
+    #     stop=start+delay
+    #     r=rospy.Rate(100)
+    #     while not rospy.is_shutdown():
+    #         t=time.time()
+    #         if t>stop: break
+    #         ratio=(t-start)/delay
+    #         angles=RobotInterface.interpolate(stop_angles,start_angles,ratio)
+    #         self.set_angles(angles)
+    #         r.sleep()
 
     def moveToXY(self, x, y):
         destination = Pose()
@@ -98,7 +99,7 @@ class DarwinInterface(RobotInterface, object):
         destination.position.x = x
         destination.position.y = y
         destination.position.z = 0
-        self.walkTo3DPose(destination)
+        self.moveTo3DPose(destination)
 
     def moveToPose(self, x, y, theta):
         destination = Pose()
@@ -110,9 +111,9 @@ class DarwinInterface(RobotInterface, object):
         destination.orientation.y = quaternion[1]
         destination.orientation.z = quaternion[2]
         destination.orientation.w = quaternion[3]
-        self.walkTo3DPose(self, destination)
+        self.moveTo3DPose(self, destination)
 
-    def walkTo3DPose(self, destination):
+    def moveTo3DPose(self, destination):
         rospy.loginfo("Staggering to given destination {}".format(str(destination)))
         while not self.pose:
             print "Pose has not yet been initialized, can not move."
@@ -199,85 +200,71 @@ class DarwinInterface(RobotInterface, object):
             # print "heading: " + str(heading) + " -- destAng: " + str(destAng) + " -- turnAng: " + str(turnAng) + " -- angV: " + str (angV) + " -- dist: " + str(distAbs) + " -- fwdV: " + str(fwdV)
             # break
             
-            self.set_walk_velocity(fwdV,0,angV)
+            self.set_move_velocity(fwdV,0,angV)
 
             if (abs(turnAng) < angThreshold and abs(distAbs) < distThreshold):
-                self.set_walk_velocity(0,0,0)
+                self.set_move_velocity(0,0,0)
                 rospy.loginfo("Arrived at destination")
                 break
 
             rospy.sleep(0.2)
 
     def grasp(self):
-        self.spread_arms()
-        rospy.sleep(1)
-        jl = "j_shoulder_l"
-        jr = "j_shoulder_r"
-        vl = math.pi/2
-        vr = -math.pi/2
-        self._pub_joints[jl].publish(vl)
-        self._pub_joints[jr].publish(vr)
-        rospy.sleep(2.5)
-        jl = "j_high_arm_l"
-        jr = "j_high_arm_r"
-        vl = -1.4
-        vr = -1.4
-        self._pub_joints[jl].publish(vl)
-        self._pub_joints[jr].publish(vr)
-        rospy.sleep(2.5)
-        self.set_walk_velocity(-0.1,0,0)
-        rospy.sleep(2.5)
-        self.set_walk_velocity(0.1,0,0)
-        rospy.sleep(0.5)
-        self.set_walk_velocity(0,0,0)
+        rospy.logwarn("PR2 grasping not implemented")
+        # jl = "j_shoulder_l"
+        # jr = "j_shoulder_r"
+        # vl = math.pi/2
+        # vr = -math.pi/2
+        # self._pub_joints[jl].publish(vl)
+        # self._pub_joints[jr].publish(vr)
+        # rospy.sleep(2.5)
+        # jl = "j_high_arm_l"
+        # jr = "j_high_arm_r"
+        # vl = -1.4
+        # vr = -1.4
+        # self._pub_joints[jl].publish(vl)
+        # self._pub_joints[jr].publish(vr)
+        # rospy.sleep(2.5)
+        # self.set_walk_velocity(-0.1,0,0)
+        # rospy.sleep(2.5)
+        # self.set_walk_velocity(0.1,0,0)
+        # rospy.sleep(0.5)
+        # self.set_walk_velocity(0,0,0)
 
     def raise_arms(self):
-        jl = "j_shoulder_l"
-        jr = "j_shoulder_r"
-        vl = 0
-        vr = 0
-        self._pub_joints[jl].publish(vl)
-        self._pub_joints[jr].publish(vr)
-        rospy.sleep(2.5)
-        jl = "j_high_arm_l"
-        jr = "j_high_arm_r"
-        vl = -1.4
-        vr = -1.4
-        self._pub_joints[jl].publish(vl)
-        self._pub_joints[jr].publish(vr)
-
-    def spread_arms(self):
-        jl = "j_shoulder_l"
-        jr = "j_shoulder_r"
-        vl = math.pi/2
-        vr = -math.pi/2
-        self._pub_joints[jl].publish(vl)
-        self._pub_joints[jr].publish(vr)
+        rospy.logwarn("PR2 raise arms not implemented")
+        # jl = "j_shoulder_l"
+        # jr = "j_shoulder_r"
+        # vl = 0
+        # vr = 0
+        # self._pub_joints[jl].publish(vl)
+        # self._pub_joints[jr].publish(vr)
         # rospy.sleep(2.5)
-        jl = "j_high_arm_l"
-        jr = "j_high_arm_r"
-        vl = 0
-        vr = 0
-        self._pub_joints[jl].publish(vl)
-        self._pub_joints[jr].publish(vr)
-        jl = "j_low_arm_l"
-        jr = "j_low_arm_r"
-        vl = 0
-        vr = 0
-        self._pub_joints[jl].publish(vl)
-        self._pub_joints[jr].publish(vr)
-        jl = "j_wrist_l"
-        jr = "j_wrist_r"
-        vl = 0
-        vr = 0
-        self._pub_joints[jl].publish(vl)
-        self._pub_joints[jr].publish(vr)
+        # jl = "j_high_arm_l"
+        # jr = "j_high_arm_r"
+        # vl = -1.4
+        # vr = -1.4
+        # self._pub_joints[jl].publish(vl)
+        # self._pub_joints[jr].publish(vr)
+        # pass
 
     def release(self):
-        self.spread_arms()
-        rospy.sleep(1)
-        self.set_walk_velocity(-0.5, 0, 0)
-        rospy.sleep(1.5)
-        self.set_walk_velocity(0, 0, 0)
+        rospy.logwarn("PR2 realease action not implemented")
+        # jl = "j_shoulder_l"
+        # jr = "j_shoulder_r"
+        # vl = math.pi/2
+        # vr = -math.pi/2
+        # self._pub_joints[jl].publish(vl)
+        # self._pub_joints[jr].publish(vr)
+        # rospy.sleep(2.5)
+        # jl = "j_high_arm_l"
+        # jr = "j_high_arm_r"
+        # vl = 0
+        # vr = 0
+        # self._pub_joints[jl].publish(vl)
+        # self._pub_joints[jr].publish(vr)
+        # self.set_walk_velocity(-0.5,0,0)
+        # rospy.sleep(1.5)
+        # self.set_walk_velocity(0,0,0)
         # pass
 

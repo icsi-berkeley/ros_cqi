@@ -1,0 +1,2469 @@
+<sdf version='1.4'>
+  <world name='default'>
+    <light name='sun' type='directional'>
+      <cast_shadows>1</cast_shadows>
+      <pose>0 0 10 0 -0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+    <model name='ground_plane'>
+      <static>1</static>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+              </ode>
+            </friction>
+            <bounce/>
+            <contact>
+              <ode/>
+            </contact>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Grey</name>
+            </script>
+          </material>
+        </visual>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    <physics type='ode'>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+      <gravity>0 0 -9.8</gravity>
+    </physics>
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>1</shadows>
+    </scene>
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>0</latitude_deg>
+      <longitude_deg>0</longitude_deg>
+      <elevation>0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
+    <model name='darwin'>
+      <link name='base_link'>
+        <pose>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose>-0.00302297 -0.0380721 -0.0190863 0 -0 0</pose>
+          <mass>0.995599</mass>
+          <inertia>
+            <ixx>9.32461</ixx>
+            <ixy>-0.254601</ixy>
+            <ixz>2.03182</ixz>
+            <iyy>17.0421</iyy>
+            <iyz>-0.164173</iyz>
+            <izz>18.0893</izz>
+          </inertia>
+        </inertial>
+        <collision name='base_link_collision_MP_BACK_L'>
+          <pose>0 0.06035 0 -1.5708 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.001 0.001 0.001</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='base_link_collision_MP_BACK_R'>
+          <pose>0 -0.06035 0 1.5708 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.001 0.001 0.001</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='base_link_collision_MP_BODY'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/body_coll.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='base_link_visual_MP_BACK_L'>
+          <pose>0 0.06035 0 -1.5708 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.001 0.001 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='base_link_visual_MP_BACK_R'>
+          <pose>0 -0.06035 0 1.5708 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.001 0.001 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='base_link_visual_MP_BODY'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/body.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <gravity>1</gravity>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <link name='MP_SHOULDER_L'>
+        <pose>0 0.06035 0 2.35619 -1.57079 2.35619</pose>
+        <inertial>
+          <pose>-0.0135226 0.0102641 0.00139357 0 -0 0</pose>
+          <mass>0.025913</mass>
+          <inertia>
+            <ixx>0.00977582</ixx>
+            <ixy>0.00169118</ixy>
+            <ixz>-0.000451743</ixz>
+            <iyy>0.0105111</iyy>
+            <iyz>0.00033407</iyz>
+            <izz>0.0054768</izz>
+          </inertia>
+        </inertial>
+        <collision name='MP_SHOULDER_L_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/shoulder_l_coll.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='MP_SHOULDER_L_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/shoulder_l.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='j_shoulder_l' type='revolute'>
+        <child>MP_SHOULDER_L</child>
+        <parent>base_link</parent>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-2.61799</lower>
+            <upper>2.61799</upper>
+            <effort>2.8</effort>
+            <velocity>5.65487</velocity>
+          </limit>
+          <dynamics/>
+        </axis>
+      </joint>
+      <link name='MP_ARM_HIGH_L'>
+        <pose>-4.28718e-10 0.082 -0.016 1.5708 -1.66533e-16 -1.5708</pose>
+        <inertial>
+          <pose>-0.036239 0.000734 0.00066 0 -0 0</pose>
+          <mass>0.168377</mass>
+          <inertia>
+            <ixx>0.122028</ixx>
+            <ixy>-0.00208126</ixy>
+            <ixz>-0.000881434</ixz>
+            <iyy>0.0380884</iyy>
+            <iyz>0.00182514</iyz>
+            <izz>0.113408</izz>
+          </inertia>
+        </inertial>
+        <collision name='MP_ARM_HIGH_L_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/arm_high_l_coll.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='MP_ARM_HIGH_L_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/arm_high_l.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='j_high_arm_l' type='revolute'>
+        <child>MP_ARM_HIGH_L</child>
+        <parent>MP_SHOULDER_L</parent>
+        <axis>
+          <xyz>-1 0 0</xyz>
+          <limit>
+            <lower>-2.61799</lower>
+            <upper>2.61799</upper>
+            <effort>2.8</effort>
+            <velocity>5.64867</velocity>
+          </limit>
+          <dynamics/>
+        </axis>
+      </joint>
+      <link name='MP_ARM_LOW_L'>
+        <pose>0.016 0.142 -0.016 8.03847e-08 1.42407e-13 1.57079</pose>
+        <inertial>
+          <pose>0 0 0 0 -0 0</pose>
+          <mass>0.0592885</mass>
+          <inertia>
+            <ixx>0.0868553</ixx>
+            <ixy>0.00530203</ixy>
+            <ixz>0.000436361</ixz>
+            <iyy>0.0211921</iyy>
+            <iyz>-0.00648559</iyz>
+            <izz>0.0868455</izz>
+          </inertia>
+        </inertial>
+        <collision name='MP_ARM_LOW_L_collision'>
+          <pose>0.016 0.016 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.032 0.032 0.035</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='MP_ARM_LOW_L_visual'>
+          <pose>0.016 0.016 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.032 0.032 0.035</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='j_low_arm_l' type='revolute'>
+        <child>MP_ARM_LOW_L</child>
+        <parent>MP_ARM_HIGH_L</parent>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>-2.61799</lower>
+            <upper>2.61799</upper>
+            <effort>2.8</effort>
+            <velocity>5.65487</velocity>
+          </limit>
+          <dynamics/>
+        </axis>
+      </joint>
+      <link name='MP_ARM_GRIPPER_FIX_L'>
+        <pose>1.26944e-07 0.19 -0.016 1.5708 1.42497e-13 1.57079</pose>
+        <inertial>
+          <pose>0.054919 -0.011745 0.003333 0 -0 0</pose>
+          <mass>0.02</mass>
+          <inertia>
+            <ixx>0.244057</ixx>
+            <ixy>-0.00416284</ixy>
+            <ixz>-0.00176226</ixz>
+            <iyy>0.0761788</iyy>
+            <iyz>0.00365041</iyz>
+            <izz>0.226818</izz>
+          </inertia>
+        </inertial>
+        <collision name='MP_ARM_GRIPPER_FIX_L_collision'>
+          <pose>0.016 0 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.064 0.032 0.032</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='MP_ARM_GRIPPER_FIX_L_collision_MP_ARM_GRIPPER_FIX_DUMMY_L'>
+          <pose>0.064 -0.01 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.032 0.005 0.032</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='MP_ARM_GRIPPER_FIX_L_visual'>
+          <pose>0.016 0 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.064 0.032 0.032</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='MP_ARM_GRIPPER_FIX_L_visual_MP_ARM_GRIPPER_FIX_DUMMY_L'>
+          <pose>0.064 -0.01 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.032 0.005 0.032</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <gravity>1</gravity>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='j_wrist_l' type='revolute'>
+        <child>MP_ARM_GRIPPER_FIX_L</child>
+        <parent>MP_ARM_LOW_L</parent>
+        <axis>
+          <xyz>1 -3e-06 0</xyz>
+          <limit>
+            <lower>-2.61799</lower>
+            <upper>2.61799</upper>
+            <effort>2.8</effort>
+            <velocity>5.65487</velocity>
+          </limit>
+          <dynamics/>
+        </axis>
+      </joint>
+      <link name='MP_ARM_GRIPPER_MOV_L'>
+        <pose>2.54852e-07 0.238 -0.006 1.5708 -1 1.57079</pose>
+        <inertial>
+          <pose>0 0 0 0 -0 0</pose>
+          <mass>0.01</mass>
+          <inertia>
+            <ixx>0.122028</ixx>
+            <ixy>-0.00208126</ixy>
+            <ixz>-0.000881434</ixz>
+            <iyy>0.0380884</iyy>
+            <iyz>0.00182514</iyz>
+            <izz>0.113408</izz>
+          </inertia>
+        </inertial>
+        <collision name='MP_ARM_GRIPPER_MOV_L_collision'>
+          <pose>0.016 0 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.032 0.005 0.032</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='MP_ARM_GRIPPER_MOV_L_collision_MP_ARM_GRIPPER_MOV_L_1'>
+          <pose>0.031 -0.0025 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.002 0.01 0.032</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='MP_ARM_GRIPPER_MOV_L_visual'>
+          <pose>0.016 0 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.032 0.005 0.032</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='MP_ARM_GRIPPER_MOV_L_visual_MP_ARM_GRIPPER_MOV_L_1'>
+          <pose>0.031 -0.0025 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.002 0.01 0.032</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='j_gripper_l' type='revolute'>
+        <child>MP_ARM_GRIPPER_MOV_L</child>
+        <parent>MP_ARM_GRIPPER_FIX_L</parent>
+        <axis>
+          <xyz>1 -3e-06 0</xyz>
+          <limit>
+            <lower>-2.61799</lower>
+            <upper>2.61799</upper>
+            <effort>2.8</effort>
+            <velocity>5.65487</velocity>
+          </limit>
+          <dynamics/>
+        </axis>
+      </joint>
+      <link name='MP_SHOULDER_R'>
+        <pose>0 -0.06035 0 -2.35619 1.57079 2.35619</pose>
+        <inertial>
+          <pose>-0.013523 0.010264 0.001394 0 -0 0</pose>
+          <mass>0.025913</mass>
+          <inertia>
+            <ixx>0.00977582</ixx>
+            <ixy>0.00169118</ixy>
+            <ixz>-0.000451743</ixz>
+            <iyy>0.0105111</iyy>
+            <iyz>0.00033407</iyz>
+            <izz>0.0054768</izz>
+          </inertia>
+        </inertial>
+        <collision name='MP_SHOULDER_R_collision'>
+          <pose>0 0 0 0 -0 3.14</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/shoulder_r_coll.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='MP_SHOULDER_R_visual'>
+          <pose>0 0 0 0 -0 3.14</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/shoulder_r.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='j_shoulder_r' type='revolute'>
+        <child>MP_SHOULDER_R</child>
+        <parent>base_link</parent>
+        <axis>
+          <xyz>0 -1 0</xyz>
+          <limit>
+            <lower>-2.61799</lower>
+            <upper>2.61799</upper>
+            <effort>2.8</effort>
+            <velocity>5.65487</velocity>
+          </limit>
+          <dynamics/>
+        </axis>
+      </joint>
+      <link name='MP_ARM_HIGH_R'>
+        <pose>4.28718e-10 -0.082 -0.016 1.5708 5.35898e-08 1.5708</pose>
+        <inertial>
+          <pose>-0.036239 0.000734 -0.00066 0 -0 0</pose>
+          <mass>0.168377</mass>
+          <inertia>
+            <ixx>0.122028</ixx>
+            <ixy>-0.00208126</ixy>
+            <ixz>-0.000881434</ixz>
+            <iyy>0.0380884</iyy>
+            <iyz>0.00182514</iyz>
+            <izz>0.113408</izz>
+          </inertia>
+        </inertial>
+        <collision name='MP_ARM_HIGH_R_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/arm_high_r_coll.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='MP_ARM_HIGH_R_visual'>
+          <pose>0 0 0 3.14 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/arm_high_r.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='j_high_arm_r' type='revolute'>
+        <child>MP_ARM_HIGH_R</child>
+        <parent>MP_SHOULDER_R</parent>
+        <axis>
+          <xyz>1 0 0</xyz>
+          <limit>
+            <lower>-2.61799</lower>
+            <upper>2.61799</upper>
+            <effort>2.8</effort>
+            <velocity>5.64867</velocity>
+          </limit>
+          <dynamics/>
+        </axis>
+      </joint>
+      <link name='MP_ARM_LOW_R'>
+        <pose>0.016 -0.142 -0.016 2.6795e-08 -5.35898e-08 -1.5708</pose>
+        <inertial>
+          <pose>0 0 0 0 -0 0</pose>
+          <mass>0.0592885</mass>
+          <inertia>
+            <ixx>0.0868553</ixx>
+            <ixy>0.00530203</ixy>
+            <ixz>0.000436361</ixz>
+            <iyy>0.0211921</iyy>
+            <iyz>-0.00648559</iyz>
+            <izz>0.0868455</izz>
+          </inertia>
+        </inertial>
+        <collision name='MP_ARM_LOW_R_collision'>
+          <pose>0.016 -0.016 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.032 0.032 0.035</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='MP_ARM_LOW_R_visual'>
+          <pose>0.016 -0.016 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.032 0.032 0.035</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='j_low_arm_r' type='revolute'>
+        <child>MP_ARM_LOW_R</child>
+        <parent>MP_ARM_HIGH_R</parent>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>-1.635</lower>
+            <upper>2.61799</upper>
+            <effort>2.8</effort>
+            <velocity>5.65487</velocity>
+          </limit>
+          <dynamics/>
+        </axis>
+      </joint>
+      <link name='MP_ARM_GRIPPER_FIX_R'>
+        <pose>-1.26944e-07 -0.19 -0.016 1.5708 -5.35898e-08 -1.5708</pose>
+        <inertial>
+          <pose>0.054919 -0.011745 0.003333 0 -0 0</pose>
+          <mass>0.02</mass>
+          <inertia>
+            <ixx>0.244057</ixx>
+            <ixy>-0.00416284</ixy>
+            <ixz>-0.00176226</ixz>
+            <iyy>0.0761788</iyy>
+            <iyz>0.00365041</iyz>
+            <izz>0.226818</izz>
+          </inertia>
+        </inertial>
+        <collision name='MP_ARM_GRIPPER_FIX_R_collision'>
+          <pose>0.016 0 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.064 0.032 0.032</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='MP_ARM_GRIPPER_FIX_R_collision_MP_ARM_GRIPPER_FIX_DUMMY_R'>
+          <pose>0.064 -0.01 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.032 0.005 0.032</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='MP_ARM_GRIPPER_FIX_R_visual'>
+          <pose>0.016 0 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.064 0.032 0.032</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='MP_ARM_GRIPPER_FIX_R_visual_MP_ARM_GRIPPER_FIX_DUMMY_R'>
+          <pose>0.064 -0.01 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.032 0.005 0.032</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <gravity>1</gravity>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='j_wrist_r' type='revolute'>
+        <child>MP_ARM_GRIPPER_FIX_R</child>
+        <parent>MP_ARM_LOW_R</parent>
+        <axis>
+          <xyz>-1 3e-06 0</xyz>
+          <limit>
+            <lower>-2.61799</lower>
+            <upper>2.61799</upper>
+            <effort>2.8</effort>
+            <velocity>5.65487</velocity>
+          </limit>
+          <dynamics/>
+        </axis>
+      </joint>
+      <link name='MP_ARM_GRIPPER_MOV_R'>
+        <pose>-2.54316e-07 -0.238 -0.00599999 1.5708 -1 -1.5708</pose>
+        <inertial>
+          <pose>0 0 0 0 -0 0</pose>
+          <mass>0.01</mass>
+          <inertia>
+            <ixx>0.122028</ixx>
+            <ixy>-0.00208126</ixy>
+            <ixz>-0.000881434</ixz>
+            <iyy>0.0380884</iyy>
+            <iyz>0.00182514</iyz>
+            <izz>0.113408</izz>
+          </inertia>
+        </inertial>
+        <collision name='MP_ARM_GRIPPER_MOV_R_collision'>
+          <pose>0.016 0 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.032 0.005 0.032</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='MP_ARM_GRIPPER_MOV_R_collision_MP_ARM_GRIPPER_MOV_R_1'>
+          <pose>0.031 -0.0025 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.002 0.01 0.032</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='MP_ARM_GRIPPER_MOV_R_visual'>
+          <pose>0.016 0 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.032 0.005 0.032</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='MP_ARM_GRIPPER_MOV_R_visual_MP_ARM_GRIPPER_MOV_R_1'>
+          <pose>0.031 -0.0025 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.002 0.01 0.032</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='j_gripper_r' type='revolute'>
+        <child>MP_ARM_GRIPPER_MOV_R</child>
+        <parent>MP_ARM_GRIPPER_FIX_R</parent>
+        <axis>
+          <xyz>-1 3e-06 0</xyz>
+          <limit>
+            <lower>-2.61799</lower>
+            <upper>2.61799</upper>
+            <effort>2.8</effort>
+            <velocity>5.65487</velocity>
+          </limit>
+          <dynamics/>
+        </axis>
+      </joint>
+      <link name='MP_NECK'>
+        <pose>0 0 0.0235 0 -0 1.5708</pose>
+        <inertial>
+          <pose>0.001424 -0.016567 -0.007128 0 -0 0</pose>
+          <mass>0.0243577</mass>
+          <inertia>
+            <ixx>0.00514111</ixx>
+            <ixy>-0.000575303</ixy>
+            <ixz>-2.4729e-05</ixz>
+            <iyy>0.00819157</iyy>
+            <iyz>-1.92231e-05</iyz>
+            <izz>0.00113798</izz>
+          </inertia>
+        </inertial>
+        <collision name='MP_NECK_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/neck_coll.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='MP_NECK_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/neck.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='j_pan' type='revolute'>
+        <child>MP_NECK</child>
+        <parent>base_link</parent>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>-2.61799</lower>
+            <upper>2.61799</upper>
+            <effort>2.8</effort>
+            <velocity>5.65487</velocity>
+          </limit>
+          <dynamics/>
+        </axis>
+      </joint>
+      <link name='MP_HEAD'>
+        <pose>0 0 0.05065 -1.5708 1.14248e-17 3.14159</pose>
+        <inertial>
+          <pose>6.4e-05 -0.018565 -0.007667 0 -0 0</pose>
+          <mass>0.158042</mass>
+          <inertia>
+            <ixx>0.123968</ixx>
+            <ixy>7.84944e-05</ixy>
+            <ixz>7.64598e-06</ixz>
+            <iyy>0.117838</iyy>
+            <iyz>0.00121992</iyz>
+            <izz>0.15836</izz>
+          </inertia>
+        </inertial>
+        <collision name='MP_HEAD_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/head_coll.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='MP_HEAD_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/head.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <sensor name='camera' type='camera'>
+          <pose>-0.05 -0.01 0 -1.5708 -0 -3.14159</pose>
+          <camera name='__default__'>
+            <horizontal_fov>1.0123</horizontal_fov>
+            <image>
+              <width>320</width>
+              <height>200</height>
+            </image>
+            <clip>
+              <near>0.001</near>
+              <far>100</far>
+            </clip>
+          </camera>
+          <always_on>1</always_on>
+          <update_rate>30</update_rate>
+          <visualize>1</visualize>
+          <plugin name='camera_controller' filename='libgazebo_ros_camera.so'>
+            <alwaysOn>true</alwaysOn>
+            <updateRate>30</updateRate>
+            <cameraName>darwin/camera</cameraName>
+            <imageTopicName>image_raw</imageTopicName>
+            <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+            <frameName>camera_link</frameName>
+            <hackBaseline>0.07</hackBaseline>
+            <distortionK1>0.0</distortionK1>
+            <distortionK2>0.0</distortionK2>
+            <distortionK3>0.0</distortionK3>
+            <distortionT1>0.0</distortionT1>
+            <distortionT2>0.0</distortionT2>
+            <robotNamespace>/</robotNamespace>
+          </plugin>
+        </sensor>
+        <gravity>1</gravity>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='j_tilt' type='revolute'>
+        <child>MP_HEAD</child>
+        <parent>MP_NECK</parent>
+        <axis>
+          <xyz>0 -1 0</xyz>
+          <limit>
+            <lower>-2.61799</lower>
+            <upper>2.61799</upper>
+            <effort>2.8</effort>
+            <velocity>5.65487</velocity>
+          </limit>
+          <dynamics/>
+        </axis>
+      </joint>
+      <link name='MP_PELVIS_L'>
+        <pose>-0.005 0.037 -0.09355 3.14159 2.65359e-06 1.5708</pose>
+        <inertial>
+          <pose>0 0.00048 0.018437 0 -0 0</pose>
+          <mass>0.167</mass>
+          <inertia>
+            <ixx>0.122597</ixx>
+            <ixy>0.000711275</ixy>
+            <ixz>0.000811439</ixz>
+            <iyy>0.110666</iyy>
+            <iyz>-0.00716355</iyz>
+            <izz>0.0418777</izz>
+          </inertia>
+        </inertial>
+        <collision name='MP_PELVIS_L_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/pelvis_l_coll.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='MP_PELVIS_L_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/pelvis_l.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='j_pelvis_l' type='revolute'>
+        <child>MP_PELVIS_L</child>
+        <parent>base_link</parent>
+        <axis>
+          <xyz>0 -3e-06 -1</xyz>
+          <limit>
+            <lower>-2.61799</lower>
+            <upper>2.61799</upper>
+            <effort>10</effort>
+            <velocity>5.65487</velocity>
+          </limit>
+          <dynamics/>
+        </axis>
+      </joint>
+      <link name='MP_THIGH1_L'>
+        <pose>-0.005 0.0369999 -0.122202 -1.5708 2.65359e-06 1.5708</pose>
+        <inertial>
+          <pose>7.9e-05 0.018242 0.013873 0 -0 0</pose>
+          <mass>0.119043</mass>
+          <inertia>
+            <ixx>0.0979503</ixx>
+            <ixy>0.00121194</ixy>
+            <ixz>-0.00021223</ixz>
+            <iyy>0.0328483</iyy>
+            <iyz>-0.0019474</iyz>
+            <izz>0.114935</izz>
+          </inertia>
+        </inertial>
+        <collision name='MP_THIGH1_L_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/thigh1_l_coll.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='MP_THIGH1_L_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/thigh1_l.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='j_thigh1_l' type='revolute'>
+        <child>MP_THIGH1_L</child>
+        <parent>MP_PELVIS_L</parent>
+        <axis>
+          <xyz>-1 0 0</xyz>
+          <limit>
+            <lower>-2.61799</lower>
+            <upper>2.61799</upper>
+            <effort>10</effort>
+            <velocity>5.65487</velocity>
+          </limit>
+          <dynamics/>
+        </axis>
+      </joint>
+      <link name='MP_THIGH2_L'>
+        <pose>-0.005 0.0369999 -0.122202 -0.00999635 -1.57079 1.58079</pose>
+        <inertial>
+          <pose>-0.062965 -0.000323 0.000692 0 -0 0</pose>
+          <mass>0.119043</mass>
+          <inertia>
+            <ixx>0.0979503</ixx>
+            <ixy>0.00121194</ixy>
+            <ixz>-0.00021223</ixz>
+            <iyy>0.0328483</iyy>
+            <iyz>-0.0019474</iyz>
+            <izz>0.114935</izz>
+          </inertia>
+        </inertial>
+        <collision name='MP_THIGH2_L_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/thigh2_l_coll.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='MP_THIGH2_L_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/thigh2_l.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='j_thigh2_l' type='revolute'>
+        <child>MP_THIGH2_L</child>
+        <parent>MP_THIGH1_L</parent>
+        <axis>
+          <xyz>0 -1 3e-06</xyz>
+          <limit>
+            <lower>-2.61799</lower>
+            <upper>2.61799</upper>
+            <effort>10</effort>
+            <velocity>5.65487</velocity>
+          </limit>
+          <dynamics/>
+        </axis>
+      </joint>
+      <link name='MP_TIBIA_L'>
+        <pose>-0.005 0.0369997 -0.215202 -0.00999635 -1.57079 1.58079</pose>
+        <inertial>
+          <pose>-0.053955 0.006548 -0.000592 0 -0 0</pose>
+          <mass>0.0703098</mass>
+          <inertia>
+            <ixx>0.0933696</ixx>
+            <ixy>-0.000935674</ixy>
+            <ixz>-0.000239921</ixz>
+            <iyy>0.0462955</iyy>
+            <iyz>-0.0128585</iyz>
+            <izz>0.113515</izz>
+          </inertia>
+        </inertial>
+        <collision name='MP_TIBIA_L_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/tibia_l_coll.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='MP_TIBIA_L_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/tibia_l.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='j_tibia_l' type='revolute'>
+        <child>MP_TIBIA_L</child>
+        <parent>MP_THIGH2_L</parent>
+        <axis>
+          <xyz>0 -1 3e-06</xyz>
+          <limit>
+            <lower>-2.61799</lower>
+            <upper>2.61799</upper>
+            <effort>10</effort>
+            <velocity>5.65487</velocity>
+          </limit>
+          <dynamics/>
+        </axis>
+      </joint>
+      <link name='MP_ANKLE1_L'>
+        <pose>-0.005 0.0369994 -0.308202 3.13159 -1.57079 1.58079</pose>
+        <inertial>
+          <pose>-0.000214 -0.018536 0.013873 0 -0 0</pose>
+          <mass>0.167108</mass>
+          <inertia>
+            <ixx>0.120792</ixx>
+            <ixy>-0.000797811</ixy>
+            <ixz>-0.000393222</ixz>
+            <iyy>0.108855</iyy>
+            <iyz>0.00707701</iyz>
+            <izz>0.0418711</izz>
+          </inertia>
+        </inertial>
+        <collision name='MP_ANKLE1_L_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/ankle1_l_coll.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='MP_ANKLE1_L_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/ankle1_l.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='j_ankle1_l' type='revolute'>
+        <child>MP_ANKLE1_L</child>
+        <parent>MP_TIBIA_L</parent>
+        <axis>
+          <xyz>3e-06 1 -3e-06</xyz>
+          <limit>
+            <lower>-2.61799</lower>
+            <upper>2.61799</upper>
+            <effort>10</effort>
+            <velocity>5.65487</velocity>
+          </limit>
+          <dynamics/>
+        </axis>
+      </joint>
+      <link name='MP_ANKLE2_L'>
+        <pose>-0.005 0.0369994 -0.308202 1.5608 -1.57079 1.58079</pose>
+        <inertial>
+          <pose>-0.025995 -0.009506 -0.000503 0 -0 0</pose>
+          <mass>0.0794462</mass>
+          <inertia>
+            <ixx>0.120792</ixx>
+            <ixy>-0.000797811</ixy>
+            <ixz>-0.000393222</ixz>
+            <iyy>0.108855</iyy>
+            <iyz>0.00707701</iyz>
+            <izz>0.0418711</izz>
+          </inertia>
+        </inertial>
+        <collision name='MP_ANKLE2_L_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/ankle2_l_coll.stl</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>1</max_contacts>
+          <surface>
+            <contact>
+              <ode>
+                <kp>1e+06</kp>
+                <kd>10</kd>
+                <min_depth>0.001</min_depth>
+              </ode>
+            </contact>
+            <friction>
+              <ode>
+                <mu>9000</mu>
+                <mu2>9000</mu2>
+              </ode>
+            </friction>
+            <bounce/>
+          </surface>
+        </collision>
+        <visual name='MP_ANKLE2_L_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/ankle2_l.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='j_ankle2_l' type='revolute'>
+        <child>MP_ANKLE2_L</child>
+        <parent>MP_ANKLE1_L</parent>
+        <axis>
+          <xyz>1 -3e-06 0</xyz>
+          <limit>
+            <lower>-2.61799</lower>
+            <upper>2.61799</upper>
+            <effort>10</effort>
+            <velocity>5.65487</velocity>
+          </limit>
+          <dynamics/>
+        </axis>
+      </joint>
+      <link name='MP_PELVIS_R'>
+        <pose>-0.005 -0.037 -0.09355 3.14159 2.65359e-06 -1.5708</pose>
+        <inertial>
+          <pose>0 0.00048 0.018437 0 -0 0</pose>
+          <mass>0.197</mass>
+          <inertia>
+            <ixx>0.122597</ixx>
+            <ixy>0.000711275</ixy>
+            <ixz>0.000811439</ixz>
+            <iyy>0.110666</iyy>
+            <iyz>-0.00716355</iyz>
+            <izz>0.0418777</izz>
+          </inertia>
+        </inertial>
+        <collision name='MP_PELVIS_R_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/pelvis_r_coll.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='MP_PELVIS_R_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/pelvis_r.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='j_pelvis_r' type='revolute'>
+        <child>MP_PELVIS_R</child>
+        <parent>base_link</parent>
+        <axis>
+          <xyz>0 3e-06 -1</xyz>
+          <limit>
+            <lower>-2.61799</lower>
+            <upper>2.61799</upper>
+            <effort>10</effort>
+            <velocity>5.65487</velocity>
+          </limit>
+          <dynamics/>
+        </axis>
+      </joint>
+      <link name='MP_THIGH1_R'>
+        <pose>-0.005 -0.0369999 -0.122202 1.5708 2.65359e-06 -1.5708</pose>
+        <inertial>
+          <pose>7.9e-05 -0.018242 0.0138735 0 -0 0</pose>
+          <mass>0.119043</mass>
+          <inertia>
+            <ixx>0.0979503</ixx>
+            <ixy>0.00121194</ixy>
+            <ixz>-0.00021223</ixz>
+            <iyy>0.0328483</iyy>
+            <iyz>-0.0019474</iyz>
+            <izz>0.114935</izz>
+          </inertia>
+        </inertial>
+        <collision name='MP_THIGH1_R_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/thigh1_r_coll.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='MP_THIGH1_R_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/thigh1_r.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='j_thigh1_r' type='revolute'>
+        <child>MP_THIGH1_R</child>
+        <parent>MP_PELVIS_R</parent>
+        <axis>
+          <xyz>-1 0 0</xyz>
+          <limit>
+            <lower>-2.61799</lower>
+            <upper>2.61799</upper>
+            <effort>10</effort>
+            <velocity>5.65487</velocity>
+          </limit>
+          <dynamics/>
+        </axis>
+      </joint>
+      <link name='MP_THIGH2_R'>
+        <pose>-0.005 -0.0369999 -0.122202 -0.0102003 1.57079 1.5606</pose>
+        <inertial>
+          <pose>0.062965 -0.000323 0.000692 0 -0 0</pose>
+          <mass>0.119043</mass>
+          <inertia>
+            <ixx>0.0979503</ixx>
+            <ixy>0.00121194</ixy>
+            <ixz>-0.00021223</ixz>
+            <iyy>0.0328483</iyy>
+            <iyz>-0.0019474</iyz>
+            <izz>0.114935</izz>
+          </inertia>
+        </inertial>
+        <collision name='MP_THIGH2_R_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/thigh2_r_coll.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='MP_THIGH2_R_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/thigh2_r.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='j_thigh2_r' type='revolute'>
+        <child>MP_THIGH2_R</child>
+        <parent>MP_THIGH1_R</parent>
+        <axis>
+          <xyz>0 1 3e-06</xyz>
+          <limit>
+            <lower>-2.61799</lower>
+            <upper>2.61799</upper>
+            <effort>10</effort>
+            <velocity>5.65487</velocity>
+          </limit>
+          <dynamics/>
+        </axis>
+      </joint>
+      <link name='MP_TIBIA_R'>
+        <pose>-0.005 -0.0369997 -0.215202 -0.0102003 1.57079 1.5606</pose>
+        <inertial>
+          <pose>0.053955 0.006548 -0.000592 0 -0 0</pose>
+          <mass>0.0703098</mass>
+          <inertia>
+            <ixx>0.0933696</ixx>
+            <ixy>-0.000935674</ixy>
+            <ixz>-0.000239921</ixz>
+            <iyy>0.0462955</iyy>
+            <iyz>-0.0128585</iyz>
+            <izz>0.113515</izz>
+          </inertia>
+        </inertial>
+        <collision name='MP_TIBIA_R_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/tibia_r_coll.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='MP_TIBIA_R_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/tibia_r.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='j_tibia_r' type='revolute'>
+        <child>MP_TIBIA_R</child>
+        <parent>MP_THIGH2_R</parent>
+        <axis>
+          <xyz>0 1 3e-06</xyz>
+          <limit>
+            <lower>-2.61799</lower>
+            <upper>2.61799</upper>
+            <effort>10</effort>
+            <velocity>5.65487</velocity>
+          </limit>
+          <dynamics/>
+        </axis>
+      </joint>
+      <link name='MP_ANKLE1_R'>
+        <pose>-0.005 -0.0369994 -0.308202 3.13139 1.57079 1.5606</pose>
+        <inertial>
+          <pose>-0.000214 -0.018536 -0.013873 0 -0 0</pose>
+          <mass>0.167108</mass>
+          <inertia>
+            <ixx>0.120792</ixx>
+            <ixy>-0.000797811</ixy>
+            <ixz>-0.000393222</ixz>
+            <iyy>0.108855</iyy>
+            <iyz>0.00707701</iyz>
+            <izz>0.0418711</izz>
+          </inertia>
+        </inertial>
+        <collision name='MP_ANKLE1_R_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/ankle1_r_coll.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='MP_ANKLE1_R_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/ankle1_r.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='j_ankle1_r' type='revolute'>
+        <child>MP_ANKLE1_R</child>
+        <parent>MP_TIBIA_R</parent>
+        <axis>
+          <xyz>3e-06 -1 -3e-06</xyz>
+          <limit>
+            <lower>-2.61799</lower>
+            <upper>2.61799</upper>
+            <effort>10</effort>
+            <velocity>5.65487</velocity>
+          </limit>
+          <dynamics/>
+        </axis>
+      </joint>
+      <link name='MP_ANKLE2_R'>
+        <pose>-0.005 -0.0369994 -0.308202 1.56059 1.57079 1.5606</pose>
+        <inertial>
+          <pose>0.025995 -0.009506 -0.000503 0 -0 0</pose>
+          <mass>0.0794462</mass>
+          <inertia>
+            <ixx>0.120792</ixx>
+            <ixy>-0.000797811</ixy>
+            <ixz>-0.000393222</ixz>
+            <iyy>0.108855</iyy>
+            <iyz>0.00707701</iyz>
+            <izz>0.0418711</izz>
+          </inertia>
+        </inertial>
+        <collision name='MP_ANKLE2_R_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/ankle2_r_coll.stl</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>1</max_contacts>
+          <surface>
+            <contact>
+              <ode>
+                <kp>1e+06</kp>
+                <kd>10</kd>
+                <min_depth>0.001</min_depth>
+              </ode>
+            </contact>
+            <friction>
+              <ode>
+                <mu>9000</mu>
+                <mu2>9000</mu2>
+              </ode>
+            </friction>
+            <bounce/>
+          </surface>
+        </collision>
+        <visual name='MP_ANKLE2_R_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/nao/ros_catkin_ecg_ws/src/darwin_description/meshes/ankle2_r.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>__default__</uri>
+            </script>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='j_ankle2_r' type='revolute'>
+        <child>MP_ANKLE2_R</child>
+        <parent>MP_ANKLE1_R</parent>
+        <axis>
+          <xyz>1 3e-06 0</xyz>
+          <limit>
+            <lower>-2.61799</lower>
+            <upper>2.61799</upper>
+            <effort>10</effort>
+            <velocity>5.65487</velocity>
+          </limit>
+          <dynamics/>
+        </axis>
+      </joint>
+      <plugin name='gazebo_ros_control' filename='libgazebo_ros_control.so'>
+        <robotNamespace>/darwin</robotNamespace>
+      </plugin>
+      <static>0</static>
+      <plugin name='gazebo_ros_imu' filename='libhector_gazebo_ros_imu.so'>
+        <updateRate>50</updateRate>
+        <serviceName>/darwin/imu_service</serviceName>
+        <topicName>/darwin/imu</topicName>
+        <gaussianNoise>0</gaussianNoise>
+        <robotNamespace>/</robotNamespace>
+        <bodyName>base_link</bodyName>
+        <xyzOffset>0 0 0</xyzOffset>
+        <rpyOffset>0 0 -0.0122735</rpyOffset>
+      </plugin>
+      <pose>0 0 0.3417 0 -0 0</pose>
+    </model>
+    <state world_name='default'>
+      <sim_time>166682 435000000</sim_time>
+      <real_time>34 255562521</real_time>
+      <wall_time>1455476185 985590859</wall_time>
+      <model name='darwin'>
+        <pose>-0.327897 0.827048 0.340667 0.000811 0.000716 -0.196807</pose>
+        <link name='MP_ANKLE1_L'>
+          <pose>-0.32569 0.864487 0.032494 0.103064 -1.57054 -1.87066</pose>
+          <velocity>-9.4e-05 6.9e-05 -0.004154 -0.000554 -0.004183 -9e-05</velocity>
+          <acceleration>0.103297 0.068247 0.179545 0.212113 0.952503 0.057187</acceleration>
+          <wrench>0.017262 0.011405 0.030003 0 -0 0</wrench>
+        </link>
+        <link name='MP_ANKLE1_R'>
+          <pose>-0.340144 0.791931 0.032452 3.06854 1.57044 1.30093</pose>
+          <velocity>-0.000122 -9.2e-05 -0.007524 -9e-05 -4e-06 -2.5e-05</velocity>
+          <acceleration>0.022152 0.018054 0.242695 -0.218807 -0.607839 -0.039082</acceleration>
+          <wrench>0.003702 0.003017 0.040556 0 -0 0</wrench>
+        </link>
+        <link name='MP_ANKLE2_L'>
+          <pose>-0.32569 0.864486 0.032493 -0.742412 -1.57076 -2.59597</pose>
+          <velocity>-0.000109 0.000159 -0.003769 -0.004881 -0.003318 -9e-05</velocity>
+          <acceleration>0.039743 0.036998 0.01592 -1.2197 1.07107 0.494093</acceleration>
+          <wrench>0.003157 0.002939 0.001265 0 -0 0</wrench>
+        </link>
+        <link name='MP_ANKLE2_R'>
+          <pose>-0.340143 0.791931 0.032461 0.988095 1.57075 0.791276</pose>
+          <velocity>-3.8e-05 -0.000185 -0.008813 0.005516 -0.001076 -2.3e-05</velocity>
+          <acceleration>-0.006718 -0.019373 0.229322 2.76936 -1.41345 3.00956</acceleration>
+          <wrench>-0.000534 -0.001539 0.018219 0 -0 0</wrench>
+        </link>
+        <link name='MP_ARM_GRIPPER_FIX_L'>
+          <pose>-0.290755 1.0134 0.324667 1.57163 0.00076 1.37398</pose>
+          <velocity>-0.00019 -3.2e-05 -0.005449 6e-06 -1.4e-05 1e-06</velocity>
+          <acceleration>0.001309 0.013005 0.224263 -0.838283 0.066438 0.052796</acceleration>
+          <wrench>2.6e-05 0.00026 0.004485 0 -0 0</wrench>
+        </link>
+        <link name='MP_ARM_GRIPPER_FIX_R'>
+          <pose>-0.36506 0.640732 0.324358 1.56998 0.002387 -1.76761</pose>
+          <velocity>-0.000187 -3.3e-05 -0.005459 -7.2e-05 -1.2e-05 1e-06</velocity>
+          <acceleration>0.001649 0.01306 0.222719 0.839589 -0.061052 0.035216</acceleration>
+          <wrench>3.3e-05 0.000261 0.004454 0 -0 0</wrench>
+        </link>
+        <link name='MP_ARM_GRIPPER_MOV_L'>
+          <pose>-0.281359 1.06048 0.33463 1.57234 -0.99924 1.37269</pose>
+          <velocity>-0.00019 -3.2e-05 -0.005455 -3.2e-05 -7e-06 1e-06</velocity>
+          <acceleration>0.00144 0.013103 0.223547 0.000771 0.001348 0.007597</acceleration>
+          <wrench>1.4e-05 0.000131 0.002235 0 -0 0</wrench>
+        </link>
+        <link name='MP_ARM_GRIPPER_MOV_R'>
+          <pose>-0.374443 0.593633 0.334244 1.56929 -0.997612 -1.76634</pose>
+          <velocity>-0.000187 -3.2e-05 -0.005462 -3.6e-05 -1.9e-05 1e-06</velocity>
+          <acceleration>0.001755 0.013044 0.222015 0.001765 0.002898 0.008005</acceleration>
+          <wrench>1.8e-05 0.00013 0.00222 0 -0 0</wrench>
+        </link>
+        <link name='MP_ARM_HIGH_L'>
+          <pose>-0.311873 0.907481 0.324732 1.56997 -0.000606 -1.76761</pose>
+          <velocity>-0.000189 -3.2e-05 -0.005504 0.000481 -0.000109 7e-06</velocity>
+          <acceleration>0.001421 0.013051 0.225595 -0.906346 0.069147 -0.028636</acceleration>
+          <wrench>0.000239 0.002198 0.037985 0 -0 0</wrench>
+        </link>
+        <link name='MP_ARM_HIGH_R'>
+          <pose>-0.343941 0.746646 0.324599 1.57162 -0.002232 1.37399</pose>
+          <velocity>-0.000187 -3.2e-05 -0.00552 -0.000547 8.3e-05 8e-06</velocity>
+          <acceleration>0.001599 0.013047 0.22393 0.908357 -0.070266 -0.050158</acceleration>
+          <wrench>0.000269 0.002197 0.037705 0 -0 0</wrench>
+        </link>
+        <link name='MP_ARM_LOW_L'>
+          <pose>-0.28445 0.963194 0.324683 0.000831 0.000606 1.37398</pose>
+          <velocity>-0.00019 -3.2e-05 -0.005473 0.000482 -0.000109 -6.61744e-24</velocity>
+          <acceleration>0.001402 0.013039 0.225229 1.04252 0.035959 -0.066895</acceleration>
+          <wrench>8.3e-05 0.000773 0.013354 0 -0 0</wrench>
+        </link>
+        <link name='MP_ARM_LOW_R'>
+          <pose>-0.339983 0.684676 0.324452 -0.000818 0.002232 -1.76761</pose>
+          <velocity>-0.000187 -3.2e-05 -0.005486 -0.000549 8.3e-05 2e-06</velocity>
+          <acceleration>0.001596 0.013058 0.223584 -1.05758 -0.023728 -0.096616</acceleration>
+          <wrench>9.5e-05 0.000774 0.013256 0 -0 0</wrench>
+        </link>
+        <link name='MP_HEAD'>
+          <pose>-0.327869 0.827001 0.391317 -1.57161 -0.000716 2.94478</pose>
+          <velocity>-0.000188 -3.5e-05 -0.005571 5.4e-05 -1.4e-05 1.4e-05</velocity>
+          <acceleration>0.002286 0.012895 0.218469 0.003644 -0.001065 0.000301</acceleration>
+          <wrench>0.000361 0.002038 0.034527 0 -0 0</wrench>
+        </link>
+        <link name='MP_NECK'>
+          <pose>-0.327884 0.827026 0.364166 0.000716 -0.000811 1.37399</pose>
+          <velocity>-0.000189 -3.4e-05 -0.005545 5.3e-05 -1.4e-05 1.4e-05</velocity>
+          <acceleration>0.001807 0.012955 0.221452 0.001126 1.7e-05 -0.002248</acceleration>
+          <wrench>4.4e-05 0.000316 0.005394 0 -0 0</wrench>
+        </link>
+        <link name='MP_PELVIS_L'>
+          <pose>-0.325616 0.864399 0.24715 -3.14088 -0.000809 1.37401</pose>
+          <velocity>-0.000187 -1.7e-05 -0.005315 5.4e-05 -1.4e-05 -9e-05</velocity>
+          <acceleration>0.012387 0.027185 0.190941 0.338457 -0.05799 -0.010528</acceleration>
+          <wrench>0.002069 0.00454 0.031887 0 -0 0</wrench>
+        </link>
+        <link name='MP_PELVIS_R'>
+          <pose>-0.340086 0.791828 0.24709 3.14087 0.000814 -1.76763</pose>
+          <velocity>-0.000186 -2.7e-05 -0.005555 5.4e-05 -1.4e-05 -2.4e-05</velocity>
+          <acceleration>0.00342 0.015024 0.215071 0.283783 -0.051527 0.009041</acceleration>
+          <wrench>0.000674 0.00296 0.042369 0 -0 0</wrench>
+        </link>
+        <link name='MP_SHOULDER_L'>
+          <pose>-0.316096 0.886233 0.340714 -0.797186 -1.56964 -0.970427</pose>
+          <velocity>-0.000191 -3.3e-05 -0.005465 5.9e-05 -2.5e-05 7e-06</velocity>
+          <acceleration>0.000777 0.012802 0.230771 -1.28849 0.297516 -0.30614</acceleration>
+          <wrench>2e-05 0.000332 0.00598 0 -0 0</wrench>
+        </link>
+        <link name='MP_SHOULDER_R'>
+          <pose>-0.339698 0.767863 0.340616 -2.3524 1.56964 2.16317</pose>
+          <velocity>-0.000189 -3.3e-05 -0.00548 4.3e-05 -3.5e-05 7e-06</velocity>
+          <acceleration>0.00091 0.012693 0.229126 1.59101 0.612392 0.22269</acceleration>
+          <wrench>2.4e-05 0.000329 0.005937 0 -0 0</wrench>
+        </link>
+        <link name='MP_THIGH1_L'>
+          <pose>-0.325632 0.864426 0.218497 -1.57008 -0.000261 1.37401</pose>
+          <velocity>-0.00019 -2e-06 -0.004985 0.000271 -6.7e-05 -9e-05</velocity>
+          <acceleration>0.022845 0.04159 0.165875 -0.372371 0.069768 -0.029969</acceleration>
+          <wrench>0.002719 0.004951 0.019746 0 -0 0</wrench>
+        </link>
+        <link name='MP_THIGH1_R'>
+          <pose>-0.340102 0.791855 0.21844 1.57008 0.000356 -1.76763</pose>
+          <velocity>-0.000183 -3e-05 -0.005741 -8.6e-05 1.4e-05 -2.4e-05</velocity>
+          <acceleration>0.001541 0.015698 0.21974 -0.030406 0.082209 0.031133</acceleration>
+          <wrench>0.000183 0.001869 0.026159 0 -0 0</wrench>
+        </link>
+        <link name='MP_THIGH2_L'>
+          <pose>-0.325632 0.864426 0.218496 2.04852 -1.57024 -0.674513</pose>
+          <velocity>-0.000192 9e-06 -0.004715 0.000368 0.000404 -9e-05</velocity>
+          <acceleration>0.03358 0.052712 0.144781 -0.002685 0.050071 -0.010875</acceleration>
+          <wrench>0.003997 0.006275 0.017235 0 -0 0</wrench>
+        </link>
+        <link name='MP_THIGH2_R'>
+          <pose>-0.340102 0.791855 0.218443 0.879092 1.57023 2.25306</pose>
+          <velocity>-0.000175 -4.1e-05 -0.006201 -0.000121 -0.000167 -2.5e-05</velocity>
+          <acceleration>0.007135 0.016196 0.227939 0.250409 -0.061799 0.001995</acceleration>
+          <wrench>0.000849 0.001928 0.027134 0 -0 0</wrench>
+        </link>
+        <link name='MP_TIBIA_L'>
+          <pose>-0.325673 0.864459 0.125494 2.39108 -1.57044 -1.01707</pose>
+          <velocity>-0.000234 6.7e-05 -0.00419 -1.7e-05 -0.001512 -9e-05</velocity>
+          <acceleration>0.080904 0.069798 0.100942 0.210884 0.076738 -0.041461</acceleration>
+          <wrench>0.005688 0.004907 0.007097 0 -0 0</wrench>
+        </link>
+        <link name='MP_TIBIA_R'>
+          <pose>-0.340135 0.791895 0.125445 0.440476 1.5704 1.81445</pose>
+          <velocity>-0.000154 -5.9e-05 -0.006535 -0.000115 -0.000146 -2.5e-05</velocity>
+          <acceleration>0.024279 0.032747 0.231426 0.400733 -0.214312 0.055509</acceleration>
+          <wrench>0.001707 0.002302 0.016272 0 -0 0</wrench>
+        </link>
+        <link name='base_link'>
+          <pose>-0.327897 0.827048 0.340667 0.000811 0.000716 -0.196807</pose>
+          <velocity>-0.000186 -3.3e-05 -0.005605 5.4e-05 -1.5e-05 7e-06</velocity>
+          <acceleration>0.003073 0.013591 0.21431 0.042943 -0.03141 0.015274</acceleration>
+          <wrench>0.003059 0.013531 0.213367 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='ground_plane'>
+        <pose>0 0 0 0 -0 0</pose>
+        <link name='link'>
+          <pose>0 0 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+    </state>
+    <gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose>-2.07341 -15.8373 15.6678 0 0.755643 1.093</pose>
+        <view_controller>orbit</view_controller>
+      </camera>
+    </gui>
+  </world>
+</sdf>

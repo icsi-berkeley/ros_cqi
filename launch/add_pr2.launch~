@@ -1,0 +1,19 @@
+<launch>
+
+  <!-- Startup PR2 without any mechanism controllers -->
+  <!-- send pr2 urdf to param server -->
+  <include file="$(find pr2_description)/robots/upload_pr2.launch" />
+
+  <!-- push robot_description to factory and spawn robot in gazebo -->
+  <node name="spawn_pr2_model" pkg="gazebo_ros" type="spawn_model" args="$(optenv ROBOT_INITIAL_POSE) -unpause -urdf -param robot_description -model pr2 -ros_namespace /gazebo" respawn="false" output="screen" />
+
+  <!--&lt;!&ndash; default bringup script &ndash;&gt;-->
+  <!--<include file="$(find pr2_gazebo)/launch/pr2_bringup.launch" />-->
+
+  <!--&lt;!&ndash; Load and Start Default Controllers &ndash;&gt;-->
+  <!--<include file="$(find pr2_controller_configuration_gazebo)/launch/pr2_default_controllers.launch" />-->
+
+
+
+</launch>
+

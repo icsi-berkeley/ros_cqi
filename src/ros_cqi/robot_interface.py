@@ -15,21 +15,20 @@ import os
 
 class RobotInterface:
     """
-    Client ROS class for manipulating Darwin OP in Gazebo
+    Abstract Client ROS class for manipulating Robots.
     """
     
     def __init__(self):
+        self.name = ""
         self.joints=None
         self.angles=None
         self._sub_model=rospy.Subscriber("gazebo/model_states",ModelStates,self._cb_modeldata,queue_size=1)
         self._subscribe_joints()
         self.possible_comands = {}
-        self.pose = Pose()
+        self.pose = None
 
         rospy.loginfo("Listening for commands")
         self._sub_nlu=rospy.Subscriber("/cqi/command",String,self.cb_nlu,queue_size=5)
-
-        self.listen()
 
     def _subscribe_joints(self):
         rospy.logerr("Virtual function needs to be overwritten.")
@@ -43,25 +42,25 @@ class RobotInterface:
             for comm, args in self.possible_comands.items():
                 print(comm + "(" + str(args).replace("[", "").replace("]", "") + ")")
 
-            # txt_in = raw_input()
-            # if txt_in == "q":
-            #     os._exit(1)
-            # if txt_in != "":
-            #     comm, args = self.decode_command_input(txt_in)
-            #     self.execCommand(comm, args)
-            # self.execCommand("lower_arms", [])
-            self.execCommand("moveToXY", ["4.3", "3"])
-            rospy.sleep(2.5)
-            self.execCommand("grasp", [])
-            rospy.sleep(4.5)
-            self.execCommand("moveToXY", ["1", "1"])
-            rospy.sleep(2.5)
-            self.execCommand("release", [])
-            rospy.sleep(2.5)
-            self.execCommand("lower_arms", [])
+            txt_in = raw_input()
+            if txt_in == "q":
+                os._exit(1)
+            if txt_in != "":
+                comm, args = self.decode_command_input(txt_in)
+                self.execCommand(comm, args)
+            # # self.execCommand("lower_arms", [])
+            # self.execCommand("moveToXY", ["4.3", "3"])
             # rospy.sleep(2.5)
-            self.execCommand("moveToXY", ["0", "0"])
-            # break
+            # self.execCommand("grasp", [])
+            # rospy.sleep(4.5)
+            # self.execCommand("moveToXY", ["1", "1"])
+            # rospy.sleep(2.5)
+            # self.execCommand("release", [])
+            # rospy.sleep(2.5)
+            # self.execCommand("raise_arms", [])
+            # # rospy.sleep(2.5)
+            # self.execCommand("moveToXY", ["-2", "3"])
+            # # break
 
     @staticmethod
     def decode_command_input(comm_input):
@@ -75,16 +74,24 @@ class RobotInterface:
         commandName, commandArgs = self.decode_command_input(msg.data)
         self.execCommand(commandName, commandArgs)
 
+    def _cb_modeldata(self,msg):
+        # print "model data:"
+        modelLocations = {}
+        for pos,item in enumerate(msg.name):
+            if item != self.name:
+                continue
+            self.pose = msg.pose[pos]
+
     def execCommand(self, commandName, commandArgs):
         if commandName not in self.possible_comands:
             rospy.logwarn("Invalid command given: {}".format(commandName))
 
-        if commandName == "walkToXY":
+        if commandName == "moveToXY":
             x = float(commandArgs[0])
             y = float(commandArgs[1])
             self.moveToXY(x, y)
 
-        if commandName == "walkToPose":
+        if commandName == "moveToPose":
             x = float(commandArgs[0])
             y = float(commandArgs[1])
             theta = float(commandArgs[2])
@@ -93,14 +100,17 @@ class RobotInterface:
         if commandName == "grasp":
             self.grasp()
 
-        if commandName == "lower_arms":
-            self.lower_arms()
+        if commandName == "raise_arms":
+            self.raise_arms()
 
         if commandName == "release":
             self.release()
 
+        if commandName == "spread_arms":
+            self.spread_arms()
+
         if commandName == "graspObject":
-            rospy.logwarn("Command graspObject not yet implemented")
+            self.grasp_object(commandArgs)
 
     def moveToXY(self, x, y):
         rospy.logerr("Virtual function needs to be overwritten.")
@@ -111,10 +121,19 @@ class RobotInterface:
     def grasp(self):
         rospy.logerr("Virtual function needs to be overwritten.")
 
-    def lower_arms(self):
+    def raise_arms(self):
         rospy.logerr("Virtual function needs to be overwritten.")
 
     def release(self):
+        rospy.logerr("Virtual function needs to be overwritten.")
+
+    def release(self):
+        rospy.logerr("Virtual function needs to be overwritten.")
+
+    def spread_arms(self):
+        rospy.logerr("Virtual function needs to be overwritten.")
+
+    def grasp_object(self):
         rospy.logerr("Virtual function needs to be overwritten.")
 
     @staticmethod

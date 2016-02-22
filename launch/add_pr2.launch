@@ -1,0 +1,40 @@
+<launch>
+
+  <!-- Startup PR2 without any mechanism controllers -->
+  <!-- send pr2 urdf to param server -->
+  <!--<include file="$(find pr2_description)/robots/upload_pr2.launch" />-->
+  <!-- send pr2 urdf to param server -->
+  <group>
+    <!--<param name="robot_description" command="$(find xacro)/xacro.py '$(find pr2_description)/robots/pr2_no_kinectcustom_robots.urdf.xacro'" />-->
+    <param name="robot_description" command="$(find xacro)/xacro.py '$(find ros_cqi)/custom_robots/pr2.urdf.xacro'" />
+  </group>
+
+  <!-- push robot_description to factory and spawn robot in gazebo
+  coords (2,6) is left of dining table, facing the wall
+
+  -->
+  <node name="spawn_pr2_model"
+        pkg="gazebo_ros"
+        type="spawn_model"
+        args="-x 3.5
+              -y 6.5
+              -z 0.005
+              -Y -1.571
+               -unpause
+               -urdf
+               -param robot_description
+               -model pr2
+               -ros_namespace /gazebo"
+        respawn="false"
+        output="screen" />
+
+  <!-- default bringup script -->
+  <include file="$(find pr2_gazebo)/launch/pr2_bringup.launch" />
+
+  <!-- Load and Start Default Controllers -->
+  <include file="$(find pr2_controller_configuration_gazebo)/launch/pr2_default_controllers.launch" />
+
+
+
+</launch>
+
