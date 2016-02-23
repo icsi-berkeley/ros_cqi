@@ -5,14 +5,20 @@ import rospy
 import time
 from std_msgs.msg import Float64
 from sensor_msgs.msg import JointState
-from geometry_msgs.msg import Twist,Pose
+from geometry_msgs.msg import Twist, Pose
+from trajectory_msgs.msg import JointTrajectory
+from trajectory_msgs.msg import JointTrajectoryPoint
 from gazebo_msgs.msg import ModelStates,LinkStates
 import tf
 import numpy as np
 from std_msgs.msg import *
 from ros_cqi.gazebo_model import ModelLocationInterface
 from ros_cqi.robot_interface import RobotInterface
+from pr2_controllers_msgs.msg import Pr2GripperCommand
+
+
 import os
+# from pr2_controllers_msgs import Pr2GripperCommand
 
 
 class PR2Interface(RobotInterface, object):
@@ -28,28 +34,45 @@ class PR2Interface(RobotInterface, object):
                                  "graspObject": ["label"],
                                  "grasp": [],
                                  "release": [],
-                                 "raise_arms": []}
+                                 "raise_arms": [],
+                                 "spread_arms": [],
+                                 "open_gripper": []}
         self.pose = Pose()
         self.v_factor = 1
-        # rospy.loginfo("Waiting for joints to be populated...")
-        # while not rospy.is_shutdown():
-        #     if self.joints is not None: break
-        #     rospy.sleep(0.1)
-        #     rospy.loginfo("Waiting for joints to be populated...")
-        # rospy.loginfo("Joints populated")
-        
-        
-        # rospy.loginfo("Creating joint command publishers")
-        # self._pub_joints={}
-        # for j in self.joints:
-        #     p=rospy.Publisher("/darwin/"+j+"_position_controller/command",Float64,queue_size=1)
-        #     self._pub_joints[j]=p
 
-        self._pub_cmd_vel = rospy.Publisher("/base_controller/command", Twist, queue_size=1)
+        rospy.loginfo("Waiting for joints to be populated...")
+        while not rospy.is_shutdown():
+            if self.joints is not None: break
+            rospy.sleep(0.1)
+            rospy.loginfo("Waiting for joints to be populated...")
+        rospy.loginfo("Joints populated")
+        self.controllers = {"base_controller": Twist,
+                            "base_odometry": String,
+                            "head_traj_controller": String,
+                            "l_arm_controller": JointTrajectory,
+                            "l_gripper_controller": Pr2GripperCommand,
+                            "r_arm_controller": JointTrajectory,
+                            "r_gripper_controller": Pr2GripperCommand,
+                            "torso_controller": String}
+        self.joints = {}
+        self.joints["r_arm_controller"] = ["r_shoulder_pan_joint",
+                                           "r_shoulder_lift_joint",
+                                           "r_upper_arm_roll_joint",
+                                           "r_elbow_flex_joint",
+                                           "r_forearm_roll_joint",
+                                           "r_wrist_flex_joint",
+                                           "r_wrist_roll_joint"]
+
+        rospy.loginfo("Creating controller command publishers")
+        self._pub_controllers = {}
+        for c,v in self.controllers.items():
+            p=rospy.Publisher("/"+c+"/command",v,queue_size=1)
+            self._pub_controllers[c]=p
+
+        # self._pub_cmd_vel = rospy.Publisher("/base_controller/command", Twist, queue_size=1)
 
     def _subscribe_joints(self):
-        rospy.logwarn("PR2 subscribing to joint states not yet implemented.")
-        # self._sub_joints = rospy.Subscriber("/darwin/joint_states", JointState, self._cb_joints, queue_size=1)
+        self._sub_joints = rospy.Subscriber("/joint_states", JointState, self._cb_joints, queue_size=1)
 
     def set_move_velocity(self, x, y, t):
         v_factor = self.v_factor
@@ -57,73 +80,18 @@ class PR2Interface(RobotInterface, object):
         msg.linear.x = x * v_factor
         msg.linear.y = y * v_factor
         msg.angular.z = t * v_factor
-        self._pub_cmd_vel.publish(msg)
+        self._pub_controllers["base_controller"].publish(msg)
         
     def _cb_joints(self, msg):
         if self.joints is None:
             self.joints = msg.name
         self.angles = msg.position
-        
-    
-    # def get_angles(self):
-    #     if self.joints is None: return None
-    #     if self.angles is None: return None
-    #     return dict(zip(self.joints,self.angles))
-
-    # def set_angles(self,angles):
-    #     for j,v in angles.items():
-    #         if j not in self.joints:
-    #             rospy.logerror("Invalid joint name "+j)
-    #             continue
-    #         self._pub_joints[j].publish(v)
-    #
-    # def set_angles_slow(self,stop_angles,delay=2):
-    #     start_angles=self.get_angles()
-    #     start=time.time()
-    #     stop=start+delay
-    #     r=rospy.Rate(100)
-    #     while not rospy.is_shutdown():
-    #         t=time.time()
-    #         if t>stop: break
-    #         ratio=(t-start)/delay
-    #         angles=RobotInterface.interpolate(stop_angles,start_angles,ratio)
-    #         self.set_angles(angles)
-    #         r.sleep()
-
-    def moveToXY(self, x, y):
-        destination = Pose()
-        destination.orientation.x = 0
-        destination.orientation.y = 0
-        destination.orientation.z = 0
-        destination.orientation.w = 0
-        destination.position.x = x
-        destination.position.y = y
-        destination.position.z = 0
-        self.moveTo3DPose(destination)
-
-    def moveToPose(self, x, y, theta):
-        destination = Pose()
-        quaternion = RobotInterface.quaternion2DFromAngle(theta)
-        destination.position.x = x
-        destination.position.y = y
-        destination.position.z = 0
-        destination.orientation.x = quaternion[0]
-        destination.orientation.y = quaternion[1]
-        destination.orientation.z = quaternion[2]
-        destination.orientation.w = quaternion[3]
-        self.moveTo3DPose(self, destination)
 
     def moveTo3DPose(self, destination):
         rospy.loginfo("Staggering to given destination {}".format(str(destination)))
         while not self.pose:
             print "Pose has not yet been initialized, can not move."
             rospy.sleep(2)
-        # print " I am at "
-        # print self.pose
-        # print " I must go to "
-        # print destination
-        
-        # print " I have to go this way:"
 
         locationPos = np.array([self.pose.position.x,self.pose.position.y,self.pose.position.z])
         destinationPos = np.array([destination.position.x,destination.position.y,destination.position.z])
@@ -209,8 +177,31 @@ class PR2Interface(RobotInterface, object):
 
             rospy.sleep(0.2)
 
-    def grasp(self):
-        rospy.logwarn("PR2 grasping not implemented")
+    def moveToXY(self, x, y):
+        destination = Pose()
+        destination.orientation.x = 0
+        destination.orientation.y = 0
+        destination.orientation.z = 0
+        destination.orientation.w = 0
+        destination.position.x = x
+        destination.position.y = y
+        destination.position.z = 0
+        self.moveTo3DPose(destination)
+
+    def moveToPose(self, x, y, theta):
+        destination = Pose()
+        quaternion = RobotInterface.quaternion2DFromAngle(theta)
+        destination.position.x = x
+        destination.position.y = y
+        destination.position.z = 0
+        destination.orientation.x = quaternion[0]
+        destination.orientation.y = quaternion[1]
+        destination.orientation.z = quaternion[2]
+        destination.orientation.w = quaternion[3]
+        self.moveTo3DPose(self, destination)
+
+    def spread_arms(self):
+        rospy.logwarn("PR2 spread arms not implemented")
         # jl = "j_shoulder_l"
         # jr = "j_shoulder_r"
         # vl = math.pi/2
@@ -230,6 +221,56 @@ class PR2Interface(RobotInterface, object):
         # self.set_walk_velocity(0.1,0,0)
         # rospy.sleep(0.5)
         # self.set_walk_velocity(0,0,0)
+
+    def open_gripper(self):
+        ra = "r_arm_controller"
+        joint_values = {"r_wrist_flex_joint": -0.0,
+                        "r_shoulder_lift_joint": 0.0,
+                        "r_forearm_roll_joint": 0.0,
+                        "r_wrist_roll_joint": 0.0,
+                        "r_elbow_flex_joint": -0.0}
+        msg = JointTrajectory()
+        joints = self.joints["r_arm_controller"]
+        msg.joint_names = joints
+        point = JointTrajectoryPoint
+        points = [point]
+        for p in points:
+            p.positions = []
+            p.velocities = []
+            p.accelerations = []
+            p.effort = []
+            point.time_from_start = rospy.Duration(1)
+            for j in joints:
+                p.velocities.append(0.0)
+                if j in joint_values.keys():
+                    p.positions.append(joint_values[j])
+                    continue
+                p.positions.append(0)
+
+
+        msg.points = points
+        self._pub_controllers[ra].publish(msg)
+        rg = "r_gripper_controller"
+        v = 0.1
+        eff = 100.0
+        msg = Pr2GripperCommand()
+        msg.position = v
+        msg.max_effort = eff
+        self._pub_controllers[rg].publish(msg)
+        rospy.sleep(1)
+
+    def grasp(self):
+        rg = "r_gripper_controller"
+        v = 0.0
+        eff = 100.0
+        msg = Pr2GripperCommand()
+        msg.position = v
+        msg.max_effort = eff
+        self._pub_controllers[rg].publish(msg)
+        rospy.sleep(2.5)
+        self.set_move_velocity(-1, 0, 0)
+        rospy.sleep(1.5)
+        self.set_move_velocity(0, 0, 0)
 
     def raise_arms(self):
         rospy.logwarn("PR2 raise arms not implemented")

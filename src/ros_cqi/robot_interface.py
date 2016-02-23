@@ -109,6 +109,9 @@ class RobotInterface:
         if commandName == "spread_arms":
             self.spread_arms()
 
+        if commandName == "open_gripper":
+            self.open_gripper()
+
         if commandName == "graspObject":
             self.grasp_object(commandArgs)
 
@@ -131,6 +134,9 @@ class RobotInterface:
         rospy.logerr("Virtual function needs to be overwritten.")
 
     def spread_arms(self):
+        rospy.logerr("Virtual function needs to be overwritten.")
+
+    def open_gripper(self):
         rospy.logerr("Virtual function needs to be overwritten.")
 
     def grasp_object(self):
