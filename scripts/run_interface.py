@@ -40,15 +40,20 @@ if __name__=="__main__":
     pr2i.execCommand("moveToXY", ["-0.5", "0.0"])
     pr2i.execCommand("moveToXY", ["-0.5", "-0.15"])
     pr2i.execCommand("moveToXY", ["-0.2", "-0.15"])
-    pr2i.execCommand("moveToXY", ["0.15", "-0.15"])
-    # Open grippers, move wrist downwards
+    pr2i.execCommand("moveToXY", ["0.125", "-0.15"])
+    # # Open grippers, move wrist downwards
     pr2i.execCommand("open_gripper", [])
+    # rospy.sleep(5)
     # Move another bit forward
-    pr2i.execCommand("moveToXY", ["0.2", "-0.15"])
+    # pr2i.execCommand("moveToXY", ["0.17", "-0.15"])
+    # pr2i.execCommand("moveToXY", ["0.19", "-0.15"])
+    pr2i.execCommand("moveToXY", ["0.19", "-0.15"])
     # Grasp
     pr2i.execCommand("grasp", [])
 
     rospy.sleep(1.5)
+    pr2i.execCommand("moveToXY", ["-0.0", "0.0"])
+    pr2i.execCommand("moveToXY", ["0.1", "0.6"])
 
     pr2i.listen()
 

@@ -1,6 +1,7 @@
 <launch>
    	<include file="$(find gazebo_ros)/launch/empty_world.launch">
-	   	<arg name="world_name" value="$(find ros_cqi)/worlds/indoor_empty_pr2.world"/>
+	   	<arg name="world_name" value="$(find ros_cqi)/worlds/indoor_pr2_kitchen.world"/>
+		<!--<arg name="world_name" value="$(find ros_cqi)/worlds/indoor_empty_pr2.world"/>-->
         <!--<arg name="world_name" value="$(find ros_cqi)/worlds/indoor_empty_darwin.world"/>-->
         <!--<arg name="world_name" value="$(find ros_cqi)/worlds/indoor_empty.world"/>-->
   	</include>

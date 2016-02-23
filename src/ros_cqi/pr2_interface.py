@@ -225,12 +225,43 @@ class PR2Interface(RobotInterface, object):
     def open_gripper(self):
         ra = "r_arm_controller"
         joint_values = {"r_wrist_flex_joint": -0.0,
-                        "r_shoulder_lift_joint": 0.0,
+                        "r_shoulder_lift_joint": -0.00,
                         "r_forearm_roll_joint": 0.0,
                         "r_wrist_roll_joint": 0.0,
                         "r_elbow_flex_joint": -0.0}
+
+        self.set_joint_values(joint_values, ra, 1)
+
+        rg = "r_gripper_controller"
+        v = 0.1
+        eff = 100.0
+        msg = Pr2GripperCommand()
+        msg.position = v
+        msg.max_effort = eff
+        self._pub_controllers[rg].publish(msg)
+        rospy.sleep(5.6)
+
+    def grasp(self):
+        rg = "r_gripper_controller"
+        v = 0.0
+        eff = 15.0
+        msg = Pr2GripperCommand()
+        msg.position = v
+        msg.max_effort = eff
+        self._pub_controllers[rg].publish(msg)
+        rospy.sleep(4)
+        # Now raise the shoulder a little bit:
+        ra = "r_arm_controller"
+        joint_values = {"r_wrist_flex_joint": -0.0,
+                        "r_shoulder_lift_joint": -0.001,
+                        "r_forearm_roll_joint": 0.0,
+                        "r_wrist_roll_joint": 0.0,
+                        "r_elbow_flex_joint": -0.0}
+        self.set_joint_values(joint_values, ra, 1)
+
+    def set_joint_values(self,joint_values, controller, duration=1):
         msg = JointTrajectory()
-        joints = self.joints["r_arm_controller"]
+        joints = self.joints[controller]
         msg.joint_names = joints
         point = JointTrajectoryPoint
         points = [point]
@@ -239,38 +270,16 @@ class PR2Interface(RobotInterface, object):
             p.velocities = []
             p.accelerations = []
             p.effort = []
-            point.time_from_start = rospy.Duration(1)
+            point.time_from_start = rospy.Duration(duration)
             for j in joints:
                 p.velocities.append(0.0)
                 if j in joint_values.keys():
                     p.positions.append(joint_values[j])
                     continue
                 p.positions.append(0)
-
-
         msg.points = points
-        self._pub_controllers[ra].publish(msg)
-        rg = "r_gripper_controller"
-        v = 0.1
-        eff = 100.0
-        msg = Pr2GripperCommand()
-        msg.position = v
-        msg.max_effort = eff
-        self._pub_controllers[rg].publish(msg)
-        rospy.sleep(1)
-
-    def grasp(self):
-        rg = "r_gripper_controller"
-        v = 0.0
-        eff = 100.0
-        msg = Pr2GripperCommand()
-        msg.position = v
-        msg.max_effort = eff
-        self._pub_controllers[rg].publish(msg)
-        rospy.sleep(2.5)
-        self.set_move_velocity(-1, 0, 0)
-        rospy.sleep(1.5)
-        self.set_move_velocity(0, 0, 0)
+        self._pub_controllers[controller].publish(msg)
+        rospy.sleep(duration)
 
     def raise_arms(self):
         rospy.logwarn("PR2 raise arms not implemented")
