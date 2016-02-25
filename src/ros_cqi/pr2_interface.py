@@ -8,7 +8,8 @@ from sensor_msgs.msg import JointState
 from geometry_msgs.msg import Twist, Pose
 from trajectory_msgs.msg import JointTrajectory
 from trajectory_msgs.msg import JointTrajectoryPoint
-from gazebo_msgs.msg import ModelStates,LinkStates
+from gazebo_msgs.msg import ModelStates,LinkStates,ModelState
+
 import tf
 import numpy as np
 from std_msgs.msg import *
@@ -29,9 +30,9 @@ class PR2Interface(RobotInterface, object):
     def __init__(self):
         super(PR2Interface, self).__init__()
         self.name = "pr2"
-        self.possible_comands = {"moveToXY": ["x","y"],
-                                 "moveToPose": ["x","y","ang(rad)"],
-                                 "graspObject": ["label"],
+        self.possible_comands = {"move_to_xy": ["x","y"],
+                                 "move_to_pose": ["x","y","ang(rad)"],
+                                 "grasp_object": ["label"],
                                  "grasp": [],
                                  "release": [],
                                  "raise_arms": [],
@@ -48,12 +49,12 @@ class PR2Interface(RobotInterface, object):
         rospy.loginfo("Joints populated")
         self.controllers = {"base_controller": Twist,
                             "base_odometry": String,
-                            "head_traj_controller": String,
+                            "head_traj_controller": JointTrajectory,
                             "l_arm_controller": JointTrajectory,
                             "l_gripper_controller": Pr2GripperCommand,
                             "r_arm_controller": JointTrajectory,
                             "r_gripper_controller": Pr2GripperCommand,
-                            "torso_controller": String}
+                            "torso_controller": JointTrajectory}
         self.joints = {}
         self.joints["r_arm_controller"] = ["r_shoulder_pan_joint",
                                            "r_shoulder_lift_joint",
@@ -66,15 +67,14 @@ class PR2Interface(RobotInterface, object):
         rospy.loginfo("Creating controller command publishers")
         self._pub_controllers = {}
         for c,v in self.controllers.items():
-            p=rospy.Publisher("/"+c+"/command",v,queue_size=1)
+            p=rospy.Publisher("/"+c+"/command", v, queue_size=1)
             self._pub_controllers[c]=p
-
-        # self._pub_cmd_vel = rospy.Publisher("/base_controller/command", Twist, queue_size=1)
 
     def _subscribe_joints(self):
         self._sub_joints = rospy.Subscriber("/joint_states", JointState, self._cb_joints, queue_size=1)
 
     def set_move_velocity(self, x, y, t):
+        # print "Set move velocity to x: {} y: {}, theta:{}".format(x, y, t)
         v_factor = self.v_factor
         msg = Twist()
         msg.linear.x = x * v_factor
@@ -122,8 +122,8 @@ class PR2Interface(RobotInterface, object):
 
         # print " I have to turn by " + str(turnAng/math.pi*180) + " deg."
 
-        angThreshold = 0.1
-        distThreshold = 0.4
+        angThreshold = 0.03
+        distThreshold = 0.2
 
         while True:
             heading = RobotInterface.eulerFromQuarternion(self.pose)[2]
@@ -143,18 +143,19 @@ class PR2Interface(RobotInterface, object):
             else:
                 turnDir = 1
             
-            turnV = angAbs / math.pi
-            maxTurnV = 0.5
-            minTurnV = 0.00
-            turnV = max(min(math.pow(turnV,1)/2,maxTurnV),minTurnV)
+            turnV = angAbs / math.pi * 15
+            maxTurnV = 1
+            minTurnV = 0.0
+            turnV = max(min(math.pow(turnV, 2), maxTurnV), minTurnV)
             # turnV = min(angAbs,0.5)
             angV = turnV * turnDir
 
             distAbs = abs(np.linalg.norm(destinationPos2d - locationPos2d))
 
-            fwdV = min(math.pow(distAbs,1.5),1)
+            fwdV = min(math.pow(distAbs,1.0), 1.5)
             
-            if angAbs > (math.pi/2):
+            # if angAbs > (math.pi/2):
+            if angAbs > (math.pi/8):
                 fwdV = 0
             else:
                 fwdV *= (1-(angAbs/(math.pi/2)))
@@ -177,7 +178,7 @@ class PR2Interface(RobotInterface, object):
 
             rospy.sleep(0.2)
 
-    def moveToXY(self, x, y):
+    def move_to_xy(self, x, y):
         destination = Pose()
         destination.orientation.x = 0
         destination.orientation.y = 0
@@ -188,7 +189,7 @@ class PR2Interface(RobotInterface, object):
         destination.position.z = 0
         self.moveTo3DPose(destination)
 
-    def moveToPose(self, x, y, theta):
+    def move_to_pose(self, x, y, theta):
         destination = Pose()
         quaternion = RobotInterface.quaternion2DFromAngle(theta)
         destination.position.x = x
@@ -202,30 +203,11 @@ class PR2Interface(RobotInterface, object):
 
     def spread_arms(self):
         rospy.logwarn("PR2 spread arms not implemented")
-        # jl = "j_shoulder_l"
-        # jr = "j_shoulder_r"
-        # vl = math.pi/2
-        # vr = -math.pi/2
-        # self._pub_joints[jl].publish(vl)
-        # self._pub_joints[jr].publish(vr)
-        # rospy.sleep(2.5)
-        # jl = "j_high_arm_l"
-        # jr = "j_high_arm_r"
-        # vl = -1.4
-        # vr = -1.4
-        # self._pub_joints[jl].publish(vl)
-        # self._pub_joints[jr].publish(vr)
-        # rospy.sleep(2.5)
-        # self.set_walk_velocity(-0.1,0,0)
-        # rospy.sleep(2.5)
-        # self.set_walk_velocity(0.1,0,0)
-        # rospy.sleep(0.5)
-        # self.set_walk_velocity(0,0,0)
 
     def open_gripper(self):
         ra = "r_arm_controller"
         joint_values = {"r_wrist_flex_joint": -0.0,
-                        "r_shoulder_lift_joint": -0.00,
+                        "r_shoulder_lift_joint": 0.0,
                         "r_forearm_roll_joint": 0.0,
                         "r_wrist_roll_joint": 0.0,
                         "r_elbow_flex_joint": -0.0}
@@ -239,27 +221,37 @@ class PR2Interface(RobotInterface, object):
         msg.position = v
         msg.max_effort = eff
         self._pub_controllers[rg].publish(msg)
-        rospy.sleep(5.6)
+        rospy.sleep(6.5)
 
     def grasp(self):
         rg = "r_gripper_controller"
         v = 0.0
-        eff = 15.0
+        eff = 20.0
         msg = Pr2GripperCommand()
         msg.position = v
         msg.max_effort = eff
         self._pub_controllers[rg].publish(msg)
-        rospy.sleep(4)
+        rospy.sleep(10)
         # Now raise the shoulder a little bit:
         ra = "r_arm_controller"
         joint_values = {"r_wrist_flex_joint": -0.0,
-                        "r_shoulder_lift_joint": -0.001,
+                        "r_shoulder_lift_joint": -0.1,
                         "r_forearm_roll_joint": 0.0,
                         "r_wrist_roll_joint": 0.0,
                         "r_elbow_flex_joint": -0.0}
         self.set_joint_values(joint_values, ra, 1)
 
-    def set_joint_values(self,joint_values, controller, duration=1):
+    def grasp_object(self, label):
+        offset = RobotInterface.define_pose(-0.02, 0.06, -0.12,
+        # offset = RobotInterface.define_pose(1, 0.06, 1.12,
+                                            0, 0, 0.0, 0.0)
+        self.add_object_link('pr2::r_gripper_r_finger_tip_link', label, offset)
+
+        self.enforce_object_links(link_update_frequency=0.0)
+        self.grasp()
+        self.enforce_object_links(link_update_frequency=0.0)
+
+    def set_joint_values(self, joint_values, controller, duration=1):
         msg = JointTrajectory()
         joints = self.joints[controller]
         msg.joint_names = joints
@@ -283,38 +275,9 @@ class PR2Interface(RobotInterface, object):
 
     def raise_arms(self):
         rospy.logwarn("PR2 raise arms not implemented")
-        # jl = "j_shoulder_l"
-        # jr = "j_shoulder_r"
-        # vl = 0
-        # vr = 0
-        # self._pub_joints[jl].publish(vl)
-        # self._pub_joints[jr].publish(vr)
-        # rospy.sleep(2.5)
-        # jl = "j_high_arm_l"
-        # jr = "j_high_arm_r"
-        # vl = -1.4
-        # vr = -1.4
-        # self._pub_joints[jl].publish(vl)
-        # self._pub_joints[jr].publish(vr)
-        # pass
 
     def release(self):
-        rospy.logwarn("PR2 realease action not implemented")
-        # jl = "j_shoulder_l"
-        # jr = "j_shoulder_r"
-        # vl = math.pi/2
-        # vr = -math.pi/2
-        # self._pub_joints[jl].publish(vl)
-        # self._pub_joints[jr].publish(vr)
-        # rospy.sleep(2.5)
-        # jl = "j_high_arm_l"
-        # jr = "j_high_arm_r"
-        # vl = 0
-        # vr = 0
-        # self._pub_joints[jl].publish(vl)
-        # self._pub_joints[jr].publish(vr)
-        # self.set_walk_velocity(-0.5,0,0)
-        # rospy.sleep(1.5)
-        # self.set_walk_velocity(0,0,0)
-        # pass
-
+        self.open_gripper()
+        for l in self.linked_objects:
+            if l[0] == 'pr2::r_gripper_r_finger_tip_link':
+                self.release_object_link('pr2::r_gripper_r_finger_tip_link', l)

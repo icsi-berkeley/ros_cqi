@@ -1,22 +1,21 @@
 <launch>
 
-  <param name="robot_description" textfile="$(find darwin_description)/urdf/darwin.urdf" />
+  <!--<param name="robot_description" textfile="$(find darwin_description)/urdf/darwin.urdf" />-->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-      <arg name="world_name" value="$(find ros_ecgworkbench)/world_models/indoor.world"/>
-      <arg name="paused" value="true"/>
+      <arg name="world_name" value="$(find ros_ecgworkbench)/world_models/indoor_darwin_kitchen_no_model.world"/>
   </include>
-  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-file $(find darwin_description)/urdf/darwin.urdf -urdf -model darwin -z 0.3417" />
+  <!--<node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-file $(find darwin_description)/urdf/darwin.urdf -urdf -model darwin -z 0.3417" />-->
 
 
-  <include file="$(find darwin_control)/launch/darwin_control.launch"/>
+  <!--<include file="$(find darwin_control)/launch/darwin_control.launch"/>-->
 
-  <node name="darwin_walker" pkg="darwin_gazebo" type="walker.py" />
+  <!--<node name="darwin_walker" pkg="darwin_gazebo" type="walker.py" />-->
 
   <!-- Startup PR2 without any mechanism controllers -->
-  <include file="$(find pr2_gazebo)/launch/pr2_no_controllers.launch" />
+  <!--<include file="$(find pr2_gazebo)/launch/pr2_no_controllers.launch" />-->
 
   <!-- Load and Start Default Controllers -->
-  <include file="$(find pr2_controller_configuration_gazebo)/launch/pr2_default_controllers.launch" />
+  <!--<include file="$(find pr2_controller_configuration_gazebo)/launch/pr2_default_controllers.launch" />-->
 
 
 

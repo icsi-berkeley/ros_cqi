@@ -1,9 +1,11 @@
 <launch>
+	<!--<group>-->
+    <!--&lt;!&ndash;<param name="robot_description" command="$(find xacro)/xacro.py '$(find pr2_description)/robots/pr2_no_kinectcustom_robots.urdf.xacro'" />&ndash;&gt;-->
+    <!--<param name="robot_description" command="$(find xacro)/xacro.py '$(find ros_cqi)/custom_robots/pr2.urdf.xacro'" />-->
+  <!--</group>-->
    	<include file="$(find gazebo_ros)/launch/empty_world.launch">
 	   	<arg name="world_name" value="$(find ros_cqi)/worlds/indoor_pr2_kitchen.world"/>
-		<!--<arg name="world_name" value="$(find ros_cqi)/worlds/indoor_empty_pr2.world"/>-->
-        <!--<arg name="world_name" value="$(find ros_cqi)/worlds/indoor_empty_darwin.world"/>-->
-        <!--<arg name="world_name" value="$(find ros_cqi)/worlds/indoor_empty.world"/>-->
+		<!--<arg name="world_name" value="$(find ros_cqi)/worlds/indoor_pr2_kitchen_no_model.world"/>-->
   	</include>
 </launch>
 
