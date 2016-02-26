@@ -5,7 +5,13 @@
   <node name="spawn_darwin"
         pkg="gazebo_ros"
         type="spawn_model"
-        args="-file $(find darwin_description)/urdf/darwin.urdf -urdf -model darwin -x 0 -y 3 -z 0.3417" />
+        args="-file $(find darwin_description)/urdf/darwin.urdf
+              -urdf
+              -model darwin
+              -x 3.5
+              -y 6.5
+              -z 0.3417
+              -Y 3.14" />
 
   <include file="$(find darwin_control)/launch/darwin_control.launch"/>
 

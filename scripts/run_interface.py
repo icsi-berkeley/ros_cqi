@@ -41,17 +41,12 @@ def exec_pr2_demo(pr2i):
     pr2i.execCommand("release", [])
 
 def exec_darwin_demo(di):
-    di.execCommand("move_to_xy", ["4.3", "3"])
-    rospy.sleep(2.5)
-    di.execCommand("grasp", [])
-    rospy.sleep(4.5)
-    di.execCommand("move_to_xy", ["1", "1"])
-    rospy.sleep(2.5)
+    di.init_pose()
+    di.execCommand("move_to_xy", ["0.07", "5.7"])
+    di.execCommand("grasp_object", ["blue marker"])
+    di.execCommand("move_to_xy", ["-2.5", "6.3"])
     di.execCommand("release", [])
-    rospy.sleep(2.5)
-    di.execCommand("raise_arms", [])
-    # rospy.sleep(2.5)
-    di.execCommand("move_to_xy", ["-2", "3"])
+    # di.execCommand("move_to_xy", ["-2", "3"])
 
 
 if __name__ == "__main__":
@@ -59,13 +54,13 @@ if __name__ == "__main__":
     rospy.init_node("cqi")
 
     # rospy.loginfo("Instantiating Darwin Interface Client")
-    # di = DarwinInterface()
-    # exec_darwin_demo(di)
+    di = DarwinInterface()
+    exec_darwin_demo(di)
     # di.listen()
 
     # rospy.loginfo("Instantiating PR2 Interface Client")
-    pr2i = PR2Interface()
-    exec_pr2_demo(pr2i)
+    # pr2i = PR2Interface()
+    # exec_pr2_demo(pr2i)
     # pr2i.listen()
 
     rospy.spin()

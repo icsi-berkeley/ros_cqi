@@ -79,71 +79,26 @@
       <elevation>0</elevation>
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
-    <model name='unit_box_1'>
-      <pose>2 0 0.5 0 -0 0</pose>
-      <link name='link'>
-        <inertial>
-          <mass>1</mass>
-          <inertia>
-            <ixx>1</ixx>
-            <ixy>0</ixy>
-            <ixz>0</ixz>
-            <iyy>1</iyy>
-            <iyz>0</iyz>
-            <izz>1</izz>
-          </inertia>
-        </inertial>
-        <collision name='collision'>
-          <geometry>
-            <box>
-              <size>1 1 0.710021</size>
-            </box>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <bounce/>
-            <friction>
-              <ode/>
-            </friction>
-            <contact>
-              <ode/>
-            </contact>
-          </surface>
-        </collision>
-        <visual name='visual'>
-          <geometry>
-            <box>
-              <size>1 1 0.750021</size>
-            </box>
-          </geometry>
-          <material>
-            <script>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-              <name>Gazebo/Grey</name>
-            </script>
-          </material>
-        </visual>
-        <velocity_decay>
-          <linear>0</linear>
-          <angular>0</angular>
-        </velocity_decay>
-        <self_collide>0</self_collide>
-        <kinematic>0</kinematic>
-        <gravity>1</gravity>
-      </link>
-      <static>0</static>
-    </model>
     <state world_name='default'>
-      <sim_time>2125 688000000</sim_time>
-      <real_time>173 219789685</real_time>
-      <wall_time>1456422890 252370184</wall_time>
+      <sim_time>4555 923000000</sim_time>
+      <real_time>172 516599385</real_time>
+      <wall_time>1456458086 161255534</wall_time>
       <model name='Kitchen Dining'>
-        <pose>6.76635 5.85863 -0.134546 0 -0 0</pose>
+        <pose>5.85719 5.21025 0 0 -0 0</pose>
         <link name='link'>
-          <pose>6.76635 5.85863 -0.134546 0 -0 0</pose>
+          <pose>5.85719 5.21025 0 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='blue marker'>
+        <pose>0.019778 5.86244 0.014997 1.57071 1.37929 2.111</pose>
+        <link name='link'>
+          <pose>0.118398 5.92159 0.014999 1.57071 1.37929 2.111</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 -9.8 0 -0 0</acceleration>
+          <wrench>0 0 -0.49 0 -0 0</wrench>
         </link>
       </model>
       <model name='ground_plane'>
@@ -155,36 +110,27 @@
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
-      <model name='small beer'>
-        <pose>0.927032 -0.375916 0.688596 0.000973 -0.004952 0.005675</pose>
+      <model name='red marker'>
+        <pose>0.032995 6 0.015 -2.45746 -1.57077 1.57377</pose>
         <link name='link'>
-          <pose>0.926464 -0.376031 0.803595 0.000973 -0.004952 0.005675</pose>
+          <pose>-0.03995 6.08891 0.014998 -2.45746 -1.57077 1.57377</pose>
           <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>2e-06 0 -9.79981 0 0.001487 0</acceleration>
-          <wrench>1e-06 0 -3.82193 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='unit_box_1'>
-        <pose>1.41202 -0.298858 0.335893 0.000731 -0.004639 0.000613</pose>
-        <link name='link'>
-          <pose>1.41202 -0.298858 0.335893 0.000731 -0.004639 0.000613</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>-0.000693 -0.000526 -17.4441 -2.55142 0.570341 -3.14139</acceleration>
-          <wrench>-0.000693 -0.000526 -17.4441 0 -0 0</wrench>
+          <acceleration>0 0 -9.32238 1.0638e-22 0.097059 -5e-06</acceleration>
+          <wrench>0 0 -0.466119 0 -0 0</wrench>
         </link>
       </model>
     </state>
     <gui fullscreen='0'>
       <camera name='user_camera'>
-        <pose>0.324481 -0.515107 3.50061 2.28176e-17 1.2618 -0.111798</pose>
+        <pose>-3.03824 6.2469 5.48374 0 0.9738 -0.119798</pose>
         <view_controller>orbit</view_controller>
       </camera>
     </gui>
-    <model name='small beer'>
+    <model name='blue marker'>
       <link name='link'>
         <pose>0 0 0.115 0 -0 0</pose>
         <inertial>
-          <mass>0.39</mass>
+          <mass>0.05</mass>
           <inertia>
             <ixx>0.00058</ixx>
             <ixy>0</ixy>
@@ -197,8 +143,8 @@
         <collision name='collision'>
           <geometry>
             <cylinder>
-              <radius>0.035</radius>
-              <length>0.23</length>
+              <radius>0.005</radius>
+              <length>0.13</length>
             </cylinder>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -215,23 +161,42 @@
         <visual name='visual'>
           <geometry>
             <cylinder>
-              <radius>0.035</radius>
-              <length>0.23</length>
+              <radius>0.005</radius>
+              <length>0.13</length>
             </cylinder>
           </geometry>
           <material>
             <script>
-              <uri>model://beer/materials/scripts</uri>
-              <uri>model://beer/materials/textures</uri>
-              <name>Beer/Diffuse</name>
+              <uri>model://blue_marker/materials/scripts</uri>
+              <uri>model://blue_marker/materials/textures</uri>
+              <name>blue_marker/Diffuse</name>
             </script>
           </material>
         </visual>
-        <collision name='collision_anti_slip_ring'>
-          <pose>0 0 0.08 0 -0 0</pose>
+        <collision name='collision_anti_slip_ring_top'>
+          <pose>0 0 0.04 0 -0 0</pose>
           <geometry>
             <cylinder>
-              <radius>0.05</radius>
+              <radius>0.015</radius>
+              <length>0.01</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <bounce/>
+            <friction>
+              <ode/>
+            </friction>
+            <contact>
+              <ode/>
+            </contact>
+          </surface>
+        </collision>
+        <collision name='collision_anti_slip_ring_bot'>
+          <pose>0 0 -0.04 0 -0 0</pose>
+          <geometry>
+            <cylinder>
+              <radius>0.015</radius>
               <length>0.01</length>
             </cylinder>
           </geometry>
@@ -254,7 +219,103 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <pose>0 1.41772 0 0 -0 0</pose>
+      <pose>1 6 0 0 -0 0</pose>
+      <static>0</static>
+    </model>
+    <model name='red marker'>
+      <link name='link'>
+        <pose>0 0 0.115 0 -0 0</pose>
+        <inertial>
+          <mass>0.05</mass>
+          <inertia>
+            <ixx>0.00058</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.00058</iyy>
+            <iyz>0</iyz>
+            <izz>0.00019</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <cylinder>
+              <radius>0.005</radius>
+              <length>0.13</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <bounce/>
+            <friction>
+              <ode/>
+            </friction>
+            <contact>
+              <ode/>
+            </contact>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <cylinder>
+              <radius>0.005</radius>
+              <length>0.13</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://red_marker/materials/scripts</uri>
+              <uri>model://red_marker/materials/textures</uri>
+              <name>red_marker/Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <collision name='collision_anti_slip_ring_top'>
+          <pose>0 0 0.04 0 -0 0</pose>
+          <geometry>
+            <cylinder>
+              <radius>0.015</radius>
+              <length>0.01</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <bounce/>
+            <friction>
+              <ode/>
+            </friction>
+            <contact>
+              <ode/>
+            </contact>
+          </surface>
+        </collision>
+        <collision name='collision_anti_slip_ring_bot'>
+          <pose>0 0 -0.04 0 -0 0</pose>
+          <geometry>
+            <cylinder>
+              <radius>0.015</radius>
+              <length>0.01</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <bounce/>
+            <friction>
+              <ode/>
+            </friction>
+            <contact>
+              <ode/>
+            </contact>
+          </surface>
+        </collision>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+      <pose>0 6 0 0 -0 0</pose>
       <static>0</static>
     </model>
     <model name='Kitchen Dining'>
@@ -275,7 +336,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <pose>7 6 0 0 -0 0</pose>
+      <pose>3 5 0 0 -0 0</pose>
     </model>
   </world>
 </sdf>

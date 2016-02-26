@@ -23,9 +23,9 @@ class DarwinInterface(RobotInterface, object):
     def __init__(self):
         super(DarwinInterface, self).__init__()
         self.name = "darwin"
-        self.possible_comands = {"moveToXY": ["x","y"],
-                                 "moveToPose": ["x","y","ang(rad)"],
-                                 "graspObject": ["label"],
+        self.possible_comands = {"move_to_xy": ["x","y"],
+                                 "move_to_pose": ["x","y","ang(rad)"],
+                                 "grasp_object": ["label"],
                                  "grasp": [],
                                  "release": [],
                                  "raise_arms": [],
@@ -56,14 +56,14 @@ class DarwinInterface(RobotInterface, object):
         msg.linear.x = x
         msg.linear.y = y
         msg.angular.z = t
+        print "Set move velocity to x: {} y: {}, theta:{}".format(x, y, t)
         self._pub_cmd_vel.publish(msg)
         
     def _cb_joints(self, msg):
         if self.joints is None:
             self.joints = msg.name
         self.angles = msg.position
-        
-    
+
     def get_angles(self):
         if self.joints is None: return None
         if self.angles is None: return None
@@ -89,7 +89,7 @@ class DarwinInterface(RobotInterface, object):
             self.set_angles(angles)
             r.sleep()
 
-    def moveToXY(self, x, y):
+    def move_to_xy(self, x, y):
         destination = Pose()
         destination.orientation.x = 0
         destination.orientation.y = 0
@@ -100,7 +100,7 @@ class DarwinInterface(RobotInterface, object):
         destination.position.z = 0
         self.walkTo3DPose(destination)
 
-    def moveToPose(self, x, y, theta):
+    def move_to_pose(self, x, y, theta):
         destination = Pose()
         quaternion = RobotInterface.quaternion2DFromAngle(theta)
         destination.position.x = x
@@ -117,33 +117,19 @@ class DarwinInterface(RobotInterface, object):
         while not self.pose:
             print "Pose has not yet been initialized, can not move."
             rospy.sleep(2)
-        # print " I am at "
-        # print self.pose
-        # print " I must go to "
-        # print destination
-        
-        # print " I have to go this way:"
 
-        locationPos = np.array([self.pose.position.x,self.pose.position.y,self.pose.position.z])
-        destinationPos = np.array([destination.position.x,destination.position.y,destination.position.z])
-        delta = destinationPos - locationPos
+        # locationPos = np.array([self.pose.position.x,self.pose.position.y,self.pose.position.z])
+        # destinationPos = np.array([destination.position.x,destination.position.y,destination.position.z])
+        # delta = destinationPos - locationPos
         # print delta
 
         destinationPos2d = np.array([destination.position.x,destination.position.y])
-
         euler = RobotInterface.eulerFromQuarternion(self.pose)
         heading = euler[2]
 
-        # print " My heading is " + str(heading/math.pi*180) + " deg."
-
         locationPos2d = [self.pose.position.x,self.pose.position.y]
 
-        # destAng = angle_between(locationPos2d,destinationPos2d)        
         destAng = RobotInterface.angle_between2d(destinationPos2d,locationPos2d)
-
-
-        # print " My destination is at " + str(destAng/math.pi*180)  + " deg."
-
         turnAng = destAng - heading
 
         if turnAng > math.pi:
@@ -151,17 +137,19 @@ class DarwinInterface(RobotInterface, object):
         if turnAng < -math.pi:
             turnAng += (2*math.pi)
 
-        # print " I have to turn by " + str(turnAng/math.pi*180) + " deg."
-
-        angThreshold = 0.1
+        angThreshold = 0.15
         distThreshold = 0.4
+        maxTurnV = 0.2
+        minTurnV = 0.00
+        maxFwdV = 1
+        minFwdV = 0
 
         while True:
             heading = RobotInterface.eulerFromQuarternion(self.pose)[2]
-            # # locationPos2d = np.array([self.pose.position.x,self.pose.position.y])        
             locationPos2d = [self.pose.position.x,self.pose.position.y]
             destAng = RobotInterface.angle_between2d(destinationPos2d,locationPos2d)
 
+            # Determine turning speed
             turnAng = destAng - heading
             if turnAng > math.pi:
                 turnAng -= (2*math.pi)
@@ -169,115 +157,279 @@ class DarwinInterface(RobotInterface, object):
                 turnAng += (2*math.pi)
 
             angAbs = abs(turnAng)
-            if turnAng < 0 :
+            if turnAng < 0:
                 turnDir = -1
             else:
                 turnDir = 1
             
-            turnV = angAbs / math.pi
-            maxTurnV = 0.5
-            minTurnV = 0.00
-            turnV = max(min(math.pow(turnV,1)/2,maxTurnV),minTurnV)
-            # turnV = min(angAbs,0.5)
+            turnV = angAbs / math.pi * 3
+            turnV = max(min(math.pow(turnV, 2), maxTurnV), minTurnV)
             angV = turnV * turnDir
 
+            # Determine forward speed
             distAbs = abs(np.linalg.norm(destinationPos2d - locationPos2d))
-
-            fwdV = min(math.pow(distAbs,1.5),1)
+            fwdV = min(math.pow(distAbs, 1.5), 1)
+            fwdV *= (1 - turnV/maxTurnV)
+            fwdV = max(min(fwdV, maxFwdV), minFwdV)
             
-            if angAbs > (math.pi/2):
-                fwdV = 0
-            else:
-                fwdV *= (1-(angAbs/(math.pi/2)))
+            # if angAbs > (math.pi/8):
+            #     fwdV = 0
+            # else:
+            # fwdV *= (1-(angAbs/(math.pi/2)))
 
-            if (abs(turnAng) < angThreshold):
-                angV = 0
+            # if (abs(turnAng) < angThreshold):
+            #     angV = 0
 
             if (abs(distAbs) < distThreshold):
                 fwdV = 0
-
-            # print "heading: " + str(heading) + " -- destAng: " + str(destAng) + " -- turnAng: " + str(turnAng) + " -- angV: " + str (angV) + " -- dist: " + str(distAbs) + " -- fwdV: " + str(fwdV)
-            # break
             
-            self.set_walk_velocity(fwdV,0,angV)
+            self.set_walk_velocity(fwdV, 0, angV)
 
             if (abs(turnAng) < angThreshold and abs(distAbs) < distThreshold):
-                self.set_walk_velocity(0,0,0)
+                self.set_walk_velocity(0, 0, 0)
                 rospy.loginfo("Arrived at destination")
                 break
 
             rospy.sleep(0.2)
 
     def grasp(self):
-        self.spread_arms()
-        rospy.sleep(1)
-        jl = "j_shoulder_l"
-        jr = "j_shoulder_r"
-        vl = math.pi/2
+        jr = "j_gripper_r"
         vr = -math.pi/2
-        self._pub_joints[jl].publish(vl)
-        self._pub_joints[jr].publish(vr)
-        rospy.sleep(2.5)
-        jl = "j_high_arm_l"
-        jr = "j_high_arm_r"
-        vl = -1.4
-        vr = -1.4
-        self._pub_joints[jl].publish(vl)
-        self._pub_joints[jr].publish(vr)
-        rospy.sleep(2.5)
+        angles = {}
+        angles[jr] = vr
+        duration = 0.1
+        self.set_angles_slow(angles,delay=duration)
+        rospy.sleep(duration)
+
+    def open_gripper(self):
+        jr = "j_gripper_r"
+        vr = 0
+        angles = {}
+        angles[jr] = vr
+        duration = 1
+        self.set_angles_slow(angles, delay=duration)
+        rospy.sleep(duration)
+
+    def get_on_ground(self):
+        angles = {}
+        # Knees
+        angles["j_tibia_l"] = math.radians(-130)
+        angles["j_tibia_r"] = math.radians(130)
+        # Feet pitch angles
+        angles["j_ankle1_l"] = math.radians(-80)
+        angles["j_ankle1_r"] = math.radians(80)
+        # Hip pitch angles
+        angles["j_thigh2_l"] = math.radians(50)
+        angles["j_thigh2_r"] = math.radians(-50)
+
+        self.set_angles_slow(angles, delay=2)
+        rospy.sleep(1)
+        # Feet pitch angles
+        angles["j_ankle1_l"] = math.radians(-70)
+        angles["j_ankle1_r"] = math.radians(70)
+        # Knees
+        angles["j_tibia_l"] = math.radians(-100)
+        angles["j_tibia_r"] = math.radians(100)
+        # Hips
+        angles["j_thigh2_l"] = math.radians(90)
+        angles["j_thigh2_r"] = math.radians(-90)
+
+        self.set_angles_slow(angles, delay=8)
+        rospy.sleep(5)
+
+    def stand_up(self):
+        angles = {}
+
+        # # Feet
+        # angles["j_ankle1_l"] = math.radians(-70)
+        # angles["j_ankle1_r"] = math.radians(70)
+        #
+        # # Knees
+        # angles["j_tibia_l"] = math.radians(-130)
+        # angles["j_tibia_r"] = math.radians(130)
+        #
+        # # angles["j_low_arm_l"] = math.radians(-45)
+        # # angles["j_low_arm_r"] = math.radians(45)
+        #
+        # self.set_angles_slow(angles, delay=0.1)
+        #
+        # rospy.sleep(0.2)
+        # Feet
+        angles["j_ankle1_l"] = math.radians(-60)
+        angles["j_ankle1_r"] = math.radians(60)
+        # Knees
+        angles["j_tibia_l"] = math.radians(-150)
+        angles["j_tibia_r"] = math.radians(150)
+
+        # Hips
+        angles["j_thigh2_l"] = math.radians(80)
+        angles["j_thigh2_r"] = math.radians(-80)
+
+        self.set_angles_slow(angles, delay=6.5)
+
+        rospy.sleep(1)
+        # Hips
+        angles["j_tibia_l"] = math.radians(0)
+        angles["j_tibia_r"] = math.radians(0)
+
+        # Feet
+        angles["j_ankle1_l"] = math.radians(-15)
+        angles["j_ankle1_r"] = math.radians(15)
+
+        # Hip
+        angles["j_thigh2_l"] = math.radians(0)
+        angles["j_thigh2_r"] = math.radians(0)
+
+        self.set_angles_slow(angles, delay=1.8)
+
+        rospy.sleep(0.5)
+        # Feet
+        # angles["j_ankle1_l"] = math.radians(10)
+        # angles["j_ankle1_r"] = math.radians(-10)
+        # self.set_angles_slow(angles, delay=1.8)
+        #
+        # rospy.sleep(1)
+        # Feet
+        angles["j_ankle1_l"] = math.radians(0)
+        angles["j_ankle1_r"] = math.radians(0)
+        self.set_angles_slow(angles, delay=1.8)
+
+
+    def grasp_object(self, label):
+        self.open_gripper()
+        x = 0.06
+        y = -0.001
+        z = -0.1
+        w = 1
+        offset = RobotInterface.define_pose(x, y, z, 0, 0, 0.0, w)
+        self.lower_arms()
+        self.get_on_ground()
+        rospy.sleep(4)
+        self.add_object_link('darwin::MP_ARM_GRIPPER_FIX_R', label, offset)
+        self.enforce_object_links(link_update_frequency=0.0)
+        self.grasp()
+        self.enforce_object_links(link_update_frequency=0.0)
+        self.stand_up()
+        rospy.sleep(5)
+
+    def grasp_both_arms(self):
+        self.spread_arms()
+        angles = {}
+        duration = 1
+        angles["j_shoulder_l"] = math.pi/2
+        angles["j_shoulder_r"] = -math.pi/2
+        self.set_angles_slow(angles,delay=duration)
+        angles["j_high_arm_l"] = -1.4
+        angles["j_high_arm_r"] = -1.4
+        self.set_angles_slow(angles,delay=duration)
+        rospy.sleep(duration)
         self.set_walk_velocity(-0.1,0,0)
         rospy.sleep(2.5)
         self.set_walk_velocity(0.1,0,0)
         rospy.sleep(0.5)
         self.set_walk_velocity(0,0,0)
 
-    def raise_arms(self):
+    def lower_arms(self):
+        angles = {}
+        duration = 1
         jl = "j_shoulder_l"
         jr = "j_shoulder_r"
-        vl = 0
-        vr = 0
-        self._pub_joints[jl].publish(vl)
-        self._pub_joints[jr].publish(vr)
-        rospy.sleep(2.5)
+        vl = -1.3
+        vr = 1.3
+        angles[jl] = vl
+        angles[jr] = vr
         jl = "j_high_arm_l"
         jr = "j_high_arm_r"
-        vl = -1.4
-        vr = -1.4
-        self._pub_joints[jl].publish(vl)
-        self._pub_joints[jr].publish(vr)
-
-    def spread_arms(self):
-        jl = "j_shoulder_l"
-        jr = "j_shoulder_r"
-        vl = math.pi/2
-        vr = -math.pi/2
-        self._pub_joints[jl].publish(vl)
-        self._pub_joints[jr].publish(vr)
-        # rospy.sleep(2.5)
-        jl = "j_high_arm_l"
-        jr = "j_high_arm_r"
-        vl = 0
-        vr = 0
-        self._pub_joints[jl].publish(vl)
-        self._pub_joints[jr].publish(vr)
+        vl = 1.4
+        vr = 1.4
+        angles[jl] = vl
+        angles[jr] = vr
         jl = "j_low_arm_l"
         jr = "j_low_arm_r"
         vl = 0
         vr = 0
-        self._pub_joints[jl].publish(vl)
-        self._pub_joints[jr].publish(vr)
+        angles[jl] = vl
+        angles[jr] = vr
         jl = "j_wrist_l"
         jr = "j_wrist_r"
         vl = 0
         vr = 0
-        self._pub_joints[jl].publish(vl)
-        self._pub_joints[jr].publish(vr)
+        angles[jl] = vl
+        angles[jr] = vr
+        self.set_angles_slow(angles,delay=duration)
+
+    def raise_arms(self):
+        angles = {}
+        duration = 1
+        jl = "j_shoulder_l"
+        jr = "j_shoulder_r"
+        vl = 0
+        vr = 0
+        angles[jl] = vl
+        angles[jr] = vr
+        jl = "j_high_arm_l"
+        jr = "j_high_arm_r"
+        vl = -1.4
+        vr = -1.4
+        angles[jl] = vl
+        angles[jr] = vr
+        self.set_angles_slow(angles,delay=duration)
+
+    def init_pose(self):
+        angles = {}
+        # Knees
+        angles["j_tibia_l"] = math.radians(0)
+        angles["j_tibia_r"] = math.radians(0)
+        # Feet pitch angles
+        angles["j_ankle1_l"] = math.radians(0)
+        angles["j_ankle1_r"] = math.radians(0)
+        # Feet roll angles
+        angles["j_ankle2_l"] =math.radians(0)
+        angles["j_ankle2_r"] = math.radians(0)
+        # Hip yaw angles
+        angles["j_thigh1_l"] = math.radians(0)
+        angles["j_thigh1_r"] = math.radians(0)
+        # Hip pitch angles
+        angles["j_thigh2_l"] = math.radians(0)
+        angles["j_thigh2_r"] = math.radians(0)
+        self.set_angles_slow(angles, delay=2)
+
+    def spread_arms(self):
+        angles = {}
+        duration = 1
+        jl = "j_shoulder_l"
+        jr = "j_shoulder_r"
+        vl = math.pi/2
+        vr = -math.pi/2
+        angles[jl] = vl
+        angles[jr] = vr
+
+        jl = "j_high_arm_l"
+        jr = "j_high_arm_r"
+        vl = 0
+        vr = 0
+        angles[jl] = vl
+        angles[jr] = vr
+
+        jl = "j_low_arm_l"
+        jr = "j_low_arm_r"
+        vl = 0
+        vr = 0
+        angles[jl] = vl
+        angles[jr] = vr
+
+        jl = "j_wrist_l"
+        jr = "j_wrist_r"
+        vl = 0
+        vr = 0
+        angles[jl] = vl
+        angles[jr] = vr
+        self.set_angles_slow(angles,delay=duration)
 
     def release(self):
-        self.spread_arms()
-        rospy.sleep(1)
-        self.set_walk_velocity(-0.5, 0, 0)
-        rospy.sleep(1.5)
-        self.set_walk_velocity(0, 0, 0)
+        self.open_gripper()
+        for l in self.linked_objects:
+            if l[0] == 'darwin::MP_ARM_GRIPPER_FIX_R':
+                self.release_object_link(l[0], l[1])
         # pass
 

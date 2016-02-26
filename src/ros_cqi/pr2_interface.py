@@ -153,8 +153,7 @@ class PR2Interface(RobotInterface, object):
             distAbs = abs(np.linalg.norm(destinationPos2d - locationPos2d))
 
             fwdV = min(math.pow(distAbs,1.0), 1.5)
-            
-            # if angAbs > (math.pi/2):
+
             if angAbs > (math.pi/8):
                 fwdV = 0
             else:
@@ -280,4 +279,4 @@ class PR2Interface(RobotInterface, object):
         self.open_gripper()
         for l in self.linked_objects:
             if l[0] == 'pr2::r_gripper_r_finger_tip_link':
-                self.release_object_link('pr2::r_gripper_r_finger_tip_link', l)
+                self.release_object_link('pr2::r_gripper_r_finger_tip_link', l[1])
