@@ -30,7 +30,8 @@ class PR2Interface(RobotInterface, object):
     def __init__(self):
         super(PR2Interface, self).__init__()
         self.name = "pr2"
-        self.possible_comands = {"move_to_xy": ["x","y"],
+        self.possible_comands = {
+            # "move_to_xy": ["x","y"],
                                  "move_to_pose": ["x","y","ang(rad)"],
                                  "grasp_object": ["label"],
                                  "grasp": [],
@@ -55,8 +56,8 @@ class PR2Interface(RobotInterface, object):
                             "r_arm_controller": JointTrajectory,
                             "r_gripper_controller": Pr2GripperCommand,
                             "torso_controller": JointTrajectory}
-        self.joints = {}
-        self.joints["r_arm_controller"] = ["r_shoulder_pan_joint",
+        self.controller_joints = {}
+        self.controller_joints["r_arm_controller"] = ["r_shoulder_pan_joint",
                                            "r_shoulder_lift_joint",
                                            "r_upper_arm_roll_joint",
                                            "r_elbow_flex_joint",
@@ -69,6 +70,7 @@ class PR2Interface(RobotInterface, object):
         for c,v in self.controllers.items():
             p=rospy.Publisher("/"+c+"/command", v, queue_size=1)
             self._pub_controllers[c]=p
+        self.init_pose()
 
     def _subscribe_joints(self):
         self._sub_joints = rospy.Subscriber("/joint_states", JointState, self._cb_joints, queue_size=1)
@@ -177,18 +179,33 @@ class PR2Interface(RobotInterface, object):
 
             rospy.sleep(0.2)
 
-    def move_to_xy(self, x, y):
-        destination = Pose()
-        destination.orientation.x = 0
-        destination.orientation.y = 0
-        destination.orientation.z = 0
-        destination.orientation.w = 0
-        destination.position.x = x
-        destination.position.y = y
-        destination.position.z = 0
-        self.moveTo3DPose(destination)
+    # def move_to_xy(self, x, y):
+    #     destination = Pose()
+    #     destination.orientation.x = 0
+    #     destination.orientation.y = 0
+    #     destination.orientation.z = 0
+    #     destination.orientation.w = 0
+    #     destination.position.x = x
+    #     destination.position.y = y
+    #     destination.position.z = 0
+    #     self.moveTo3DPose(destination)
 
     def move_to_pose(self, x, y, theta):
+        # This is a hack to get the right trajectory to pick up the can at the kitchen counter in the kitchen scenario.
+        if x == 0.16 and y == -0.16:
+            self.execCommand("move_to_pose", ["3.5", "1.5", str(theta)])
+            self.execCommand("move_to_pose", ["-0.45", "1.3", str(theta)])
+            self.execCommand("move_to_pose", ["-0.7", "-0.18", str(theta)])
+            self.execCommand("move_to_pose", ["-0.2", "-0.16", str(theta)])
+            self.execCommand("move_to_pose", ["0.12", "-0.16", str(theta)])
+
+        # This is a hack to get the right trajectory to release the can at the dining table in the kitchen scenario.
+        if x == 1.7 and y == 5.8:
+            self.execCommand("move_to_pose", ["0.23", "0.6", str(theta)])
+            self.execCommand("move_to_pose", ["0.5", "0.8", str(theta)])
+            self.execCommand("move_to_pose", ["1.2", "0.9", str(theta)])
+            self.execCommand("move_to_pose", ["3.5", "1.2", str(theta)])
+            self.execCommand("move_to_pose", ["3.5", "5.8", str(theta)])
         destination = Pose()
         quaternion = RobotInterface.quaternion2DFromAngle(theta)
         destination.position.x = x
@@ -198,7 +215,7 @@ class PR2Interface(RobotInterface, object):
         destination.orientation.y = quaternion[1]
         destination.orientation.z = quaternion[2]
         destination.orientation.w = quaternion[3]
-        self.moveTo3DPose(self, destination)
+        self.moveTo3DPose(destination)
 
     def spread_arms(self):
         rospy.logwarn("PR2 spread arms not implemented")
@@ -252,7 +269,7 @@ class PR2Interface(RobotInterface, object):
 
     def set_joint_values(self, joint_values, controller, duration=1):
         msg = JointTrajectory()
-        joints = self.joints[controller]
+        joints = self.controller_joints[controller]
         msg.joint_names = joints
         point = JointTrajectoryPoint
         points = [point]
@@ -280,3 +297,6 @@ class PR2Interface(RobotInterface, object):
         for l in self.linked_objects:
             if l[0] == 'pr2::r_gripper_r_finger_tip_link':
                 self.release_object_link('pr2::r_gripper_r_finger_tip_link', l[1])
+
+    def init_pose(self):
+        self.open_gripper()

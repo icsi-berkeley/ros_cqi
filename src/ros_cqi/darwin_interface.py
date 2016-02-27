@@ -23,7 +23,8 @@ class DarwinInterface(RobotInterface, object):
     def __init__(self):
         super(DarwinInterface, self).__init__()
         self.name = "darwin"
-        self.possible_comands = {"move_to_xy": ["x","y"],
+        self.possible_comands = {
+            # "move_to_xy": ["x","y"],
                                  "move_to_pose": ["x","y","ang(rad)"],
                                  "grasp_object": ["label"],
                                  "grasp": [],
@@ -47,6 +48,7 @@ class DarwinInterface(RobotInterface, object):
             self._pub_joints[j]=p
 
         self._pub_cmd_vel = rospy.Publisher("/darwin/cmd_vel", Twist, queue_size=1)
+        self.init_pose()
 
     def _subscribe_joints(self):
         self._sub_joints = rospy.Subscriber("/darwin/joint_states", JointState, self._cb_joints, queue_size=1)
@@ -110,18 +112,13 @@ class DarwinInterface(RobotInterface, object):
         destination.orientation.y = quaternion[1]
         destination.orientation.z = quaternion[2]
         destination.orientation.w = quaternion[3]
-        self.walkTo3DPose(self, destination)
+        self.walkTo3DPose(destination)
 
     def walkTo3DPose(self, destination):
         rospy.loginfo("Staggering to given destination {}".format(str(destination)))
         while not self.pose:
             print "Pose has not yet been initialized, can not move."
             rospy.sleep(2)
-
-        # locationPos = np.array([self.pose.position.x,self.pose.position.y,self.pose.position.z])
-        # destinationPos = np.array([destination.position.x,destination.position.y,destination.position.z])
-        # delta = destinationPos - locationPos
-        # print delta
 
         destinationPos2d = np.array([destination.position.x,destination.position.y])
         euler = RobotInterface.eulerFromQuarternion(self.pose)
@@ -240,27 +237,12 @@ class DarwinInterface(RobotInterface, object):
     def stand_up(self):
         angles = {}
 
-        # # Feet
-        # angles["j_ankle1_l"] = math.radians(-70)
-        # angles["j_ankle1_r"] = math.radians(70)
-        #
-        # # Knees
-        # angles["j_tibia_l"] = math.radians(-130)
-        # angles["j_tibia_r"] = math.radians(130)
-        #
-        # # angles["j_low_arm_l"] = math.radians(-45)
-        # # angles["j_low_arm_r"] = math.radians(45)
-        #
-        # self.set_angles_slow(angles, delay=0.1)
-        #
-        # rospy.sleep(0.2)
         # Feet
         angles["j_ankle1_l"] = math.radians(-60)
         angles["j_ankle1_r"] = math.radians(60)
         # Knees
         angles["j_tibia_l"] = math.radians(-150)
         angles["j_tibia_r"] = math.radians(150)
-
         # Hips
         angles["j_thigh2_l"] = math.radians(80)
         angles["j_thigh2_r"] = math.radians(-80)
@@ -283,15 +265,10 @@ class DarwinInterface(RobotInterface, object):
         self.set_angles_slow(angles, delay=1.8)
 
         rospy.sleep(0.5)
-        # Feet
-        # angles["j_ankle1_l"] = math.radians(10)
-        # angles["j_ankle1_r"] = math.radians(-10)
-        # self.set_angles_slow(angles, delay=1.8)
-        #
-        # rospy.sleep(1)
-        # Feet
+
         angles["j_ankle1_l"] = math.radians(0)
         angles["j_ankle1_r"] = math.radians(0)
+
         self.set_angles_slow(angles, delay=1.8)
 
 
@@ -376,6 +353,7 @@ class DarwinInterface(RobotInterface, object):
         self.set_angles_slow(angles,delay=duration)
 
     def init_pose(self):
+        self.open_gripper()
         angles = {}
         # Knees
         angles["j_tibia_l"] = math.radians(0)
@@ -431,5 +409,4 @@ class DarwinInterface(RobotInterface, object):
         for l in self.linked_objects:
             if l[0] == 'darwin::MP_ARM_GRIPPER_FIX_R':
                 self.release_object_link(l[0], l[1])
-        # pass
 

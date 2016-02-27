@@ -61,72 +61,7 @@
         <gravity>1</gravity>
       </link>
     </model>
-    <physics type='ode'>
-      <max_step_size>0.001</max_step_size>
-      <real_time_factor>1</real_time_factor>
-      <real_time_update_rate>1000</real_time_update_rate>
-      <gravity>0 0 -9.8</gravity>
-    </physics>
-    <scene>
-      <ambient>0.4 0.4 0.4 1</ambient>
-      <background>0.7 0.7 0.7 1</background>
-      <shadows>1</shadows>
-    </scene>
-    <spherical_coordinates>
-      <surface_model>EARTH_WGS84</surface_model>
-      <latitude_deg>0</latitude_deg>
-      <longitude_deg>0</longitude_deg>
-      <elevation>0</elevation>
-      <heading_deg>0</heading_deg>
-    </spherical_coordinates>
-    <state world_name='default'>
-      <sim_time>4555 923000000</sim_time>
-      <real_time>172 516599385</real_time>
-      <wall_time>1456458086 161255534</wall_time>
-      <model name='Kitchen Dining'>
-        <pose>5.85719 5.21025 0 0 -0 0</pose>
-        <link name='link'>
-          <pose>5.85719 5.21025 0 0 -0 0</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='blue marker'>
-        <pose>0.019778 5.86244 0.014997 1.57071 1.37929 2.111</pose>
-        <link name='link'>
-          <pose>0.118398 5.92159 0.014999 1.57071 1.37929 2.111</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 -9.8 0 -0 0</acceleration>
-          <wrench>0 0 -0.49 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='ground_plane'>
-        <pose>0 0 0 0 -0 0</pose>
-        <link name='link'>
-          <pose>0 0 0 0 -0 0</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='red marker'>
-        <pose>0.032995 6 0.015 -2.45746 -1.57077 1.57377</pose>
-        <link name='link'>
-          <pose>-0.03995 6.08891 0.014998 -2.45746 -1.57077 1.57377</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 -9.32238 1.0638e-22 0.097059 -5e-06</acceleration>
-          <wrench>0 0 -0.466119 0 -0 0</wrench>
-        </link>
-      </model>
-    </state>
-    <gui fullscreen='0'>
-      <camera name='user_camera'>
-        <pose>-3.03824 6.2469 5.48374 0 0.9738 -0.119798</pose>
-        <view_controller>orbit</view_controller>
-      </camera>
-    </gui>
-    <model name='blue marker'>
+    <model name='blue_marker'>
       <link name='link'>
         <pose>0 0 0.115 0 -0 0</pose>
         <inertial>
@@ -222,7 +157,7 @@
       <pose>1 6 0 0 -0 0</pose>
       <static>0</static>
     </model>
-    <model name='red marker'>
+    <model name='red_marker'>
       <link name='link'>
         <pose>0 0 0.115 0 -0 0</pose>
         <inertial>
@@ -338,5 +273,70 @@
       </link>
       <pose>3 5 0 0 -0 0</pose>
     </model>
+    <physics type='ode'>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+      <gravity>0 0 -9.8</gravity>
+    </physics>
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>1</shadows>
+    </scene>
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>0</latitude_deg>
+      <longitude_deg>0</longitude_deg>
+      <elevation>0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
+    <state world_name='default'>
+      <sim_time>4555 923000000</sim_time>
+      <real_time>172 516599385</real_time>
+      <wall_time>1456458086 161255534</wall_time>
+      <model name='Kitchen Dining'>
+        <pose>5.85719 5.21025 0 0 -0 0</pose>
+        <link name='link'>
+          <pose>5.85719 5.21025 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='blue_marker'>
+        <pose>0.019778 5.86244 0.014997 1.57071 1.37929 2.111</pose>
+        <link name='link'>
+          <pose>0.118398 5.92159 0.014999 1.57071 1.37929 2.111</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 -9.8 0 -0 0</acceleration>
+          <wrench>0 0 -0.49 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='ground_plane'>
+        <pose>0 0 0 0 -0 0</pose>
+        <link name='link'>
+          <pose>0 0 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='red_marker'>
+        <pose>0.032995 6 0.015 -2.45746 -1.57077 1.57377</pose>
+        <link name='link'>
+          <pose>-0.03995 6.08891 0.014998 -2.45746 -1.57077 1.57377</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 -9.32238 1.0638e-22 0.097059 -5e-06</acceleration>
+          <wrench>0 0 -0.466119 0 -0 0</wrench>
+        </link>
+      </model>
+    </state>
+    <gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose>-3.03824 6.2469 5.48374 0 0.9738 -0.119798</pose>
+        <view_controller>orbit</view_controller>
+      </camera>
+    </gui>
   </world>
 </sdf>

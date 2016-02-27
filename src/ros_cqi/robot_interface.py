@@ -30,7 +30,8 @@ class RobotInterface:
         self.pose = None
 
         rospy.loginfo("Listening for commands")
-        self._sub_nlu=rospy.Subscriber("/cqi/command",String,self.cb_nlu,queue_size=5)
+        self._sub_nlu = rospy.Subscriber("/cqi/command",String,self.cb_nlu,queue_size=5)
+
 
         # This is to get the robot's pose from the simulator.
         self.model_location_interface = ModelLocationInterface()
@@ -44,7 +45,7 @@ class RobotInterface:
     def _subscribe_joints(self):
         rospy.logerr("Virtual function needs to be overwritten.")
 
-    def listen(self):
+    def listen_for_console_input(self):
         while True:
             print("Enter one of the possible commands. " +
                   "Enter command name and arguments in parenthesis. " +
@@ -133,6 +134,9 @@ class RobotInterface:
 
         if commandName == "grasp_object":
             self.grasp_object(commandArgs[0])
+
+    def init_pose(self):
+        rospy.logerr("Virtual function needs to be overwritten.")
 
     def move_to_xy(self, x, y):
         rospy.logerr("Virtual function needs to be overwritten.")
