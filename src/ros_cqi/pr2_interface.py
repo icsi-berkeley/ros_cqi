@@ -13,8 +13,8 @@ from gazebo_msgs.msg import ModelStates,LinkStates,ModelState
 import tf
 import numpy as np
 from std_msgs.msg import *
-from ros_cqi.gazebo_model import ModelLocationInterface
 from ros_cqi.robot_interface import RobotInterface
+from ros_cqi.gazebo_robot_interface import GazeboRobotInterface
 from pr2_controllers_msgs.msg import Pr2GripperCommand
 
 
@@ -22,7 +22,7 @@ import os
 # from pr2_controllers_msgs import Pr2GripperCommand
 
 
-class PR2Interface(RobotInterface, object):
+class PR2Interface(GazeboRobotInterface, object):
     """
     Client ROS class for manipulating Darwin OP in Gazebo
     """
@@ -178,17 +178,6 @@ class PR2Interface(RobotInterface, object):
                 break
 
             rospy.sleep(0.2)
-
-    # def move_to_xy(self, x, y):
-    #     destination = Pose()
-    #     destination.orientation.x = 0
-    #     destination.orientation.y = 0
-    #     destination.orientation.z = 0
-    #     destination.orientation.w = 0
-    #     destination.position.x = x
-    #     destination.position.y = y
-    #     destination.position.z = 0
-    #     self.moveTo3DPose(destination)
 
     def move_to_pose(self, x, y, theta):
         # This is a hack to get the right trajectory to pick up the can at the kitchen counter in the kitchen scenario.

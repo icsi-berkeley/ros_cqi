@@ -10,7 +10,6 @@ from gazebo_msgs.msg import ModelStates,LinkStates,ModelState
 import tf
 import numpy as np
 from std_msgs.msg import *
-from ros_cqi.gazebo_model import ModelLocationInterface
 import os
 import tf_conversions.posemath as pm
 import PyKDL
@@ -22,25 +21,29 @@ class RobotInterface:
     
     def __init__(self):
         self.name = ""
-        self.joints=None
-        self.angles=None
-        self._sub_model=rospy.Subscriber("gazebo/model_states",ModelStates,self._cb_modeldata,queue_size=1)
+        self.joints = None
+        self.angles = None
+        # self._sub_model = rospy.Subscriber("gazebo/model_states", ModelStates, self._cb_modeldata, queue_size=1)
         self._subscribe_joints()
         self.possible_comands = {}
         self.pose = None
+        self.data_to_publish = {}
+        self.data_publish_rate = 10.0
 
         rospy.loginfo("Listening for commands")
-        self._sub_nlu = rospy.Subscriber("/cqi/command",String,self.cb_nlu,queue_size=5)
+        self._sub_nlu = rospy.Subscriber("/cqi/command", String, self.cb_nlu, queue_size=5)
 
+        self.object_property_publisher = rospy.Publisher("/ros_cqi/data", String, queue_size=10)
+        self.object_property_tread = Thread(target=self.run_publish_data)
+        self.object_property_tread.start()
 
-        # This is to get the robot's pose from the simulator.
-        self.model_location_interface = ModelLocationInterface()
-
-        # This publisher is used to hack grasping by fixing an object's location.
-        self.fix_publisher = rospy.Publisher("/gazebo/set_model_state", ModelState, queue_size=1)
-        self.linked_objects = []
-        self.fix_thread = Thread(target=self.enforce_object_links, kwargs={"link_update_frequency": 0.0})
-        self.fix_thread.start()
+    def run_publish_data(self):
+        while True:
+            for p, v in self.data_to_publish.items():
+                publish_string = "has_property(" + p + ", " + v + ")"
+                self.object_property_publisher.publish(publish_string)
+            self.data_to_publish = {}
+            rospy.sleep(1/self.data_publish_rate)
 
     def _subscribe_joints(self):
         rospy.logerr("Virtual function needs to be overwritten.")
@@ -73,34 +76,11 @@ class RobotInterface:
         commandName, commandArgs = self.decode_command_input(msg.data)
         self.execCommand(commandName, commandArgs)
 
-    def _cb_modeldata(self,msg):
-        for pos,item in enumerate(msg.name):
-            if item != self.name:
-                continue
-            self.pose = msg.pose[pos]
-
-    def add_object_link(self,o1, o2, offset):
-        self.linked_objects.append([o1,o2,offset])
-
-    def release_object_link(self, o1, o2):
-        for li in self.linked_objects:
-            if li[0] == o1 and li[1] == o2:
-                self.linked_objects.remove(li)
-
-    def enforce_object_links(self, link_update_frequency=0.1):
-        while True:
-            for l in self.linked_objects:
-                o1 = l[0]
-                o2 = l[1]
-                offset = l[2]
-                o1_state = self.model_location_interface.model_states[o1]
-                o2_state = o1_state
-                o2_state.pose = self.add_poses(o1_state.pose, offset)
-                o2_state.model_name = o2
-                self.fix_publisher.publish(o2_state)
-            rospy.sleep(link_update_frequency)
-            if float(link_update_frequency) == 0.0:
-                break
+    # def _cb_modeldata(self,msg):
+    #     for pos,item in enumerate(msg.name):
+    #         if item != self.name:
+    #             continue
+    #         self.pose = msg.pose[pos]
 
     def execCommand(self, commandName, commandArgs):
         if commandName not in self.possible_comands:

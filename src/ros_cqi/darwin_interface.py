@@ -10,12 +10,13 @@ from gazebo_msgs.msg import ModelStates,LinkStates
 import tf
 import numpy as np
 from std_msgs.msg import *
-from ros_cqi.gazebo_model import ModelLocationInterface
+# from ros_cqi.gazebo_model import ModelLocationInterface
 from ros_cqi.robot_interface import RobotInterface
+from ros_cqi.gazebo_robot_interface import GazeboRobotInterface
 import os
 
 
-class DarwinInterface(RobotInterface, object):
+class DarwinInterface(GazeboRobotInterface, object):
     """
     Client ROS class for manipulating Darwin OP in Gazebo
     """
@@ -168,14 +169,6 @@ class DarwinInterface(RobotInterface, object):
             fwdV = min(math.pow(distAbs, 1.5), 1)
             fwdV *= (1 - turnV/maxTurnV)
             fwdV = max(min(fwdV, maxFwdV), minFwdV)
-            
-            # if angAbs > (math.pi/8):
-            #     fwdV = 0
-            # else:
-            # fwdV *= (1-(angAbs/(math.pi/2)))
-
-            # if (abs(turnAng) < angThreshold):
-            #     angV = 0
 
             if (abs(distAbs) < distThreshold):
                 fwdV = 0
@@ -353,6 +346,7 @@ class DarwinInterface(RobotInterface, object):
         self.set_angles_slow(angles,delay=duration)
 
     def init_pose(self):
+        self.set_walk_velocity(0, 0, 0)
         self.open_gripper()
         angles = {}
         # Knees

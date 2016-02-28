@@ -6,7 +6,6 @@ from ros_cqi.darwin_interface import DarwinInterface
 from ros_cqi.pr2_interface import PR2Interface
 from ros_cqi.robot_interface import RobotInterface
 
-from ros_cqi.gazebo_model import ModelLocationInterface
 from geometry_msgs.msg import Twist,Pose,Quaternion,Point
 from std_msgs.msg import *
 
@@ -37,12 +36,12 @@ if __name__ == "__main__":
  
     rospy.init_node("cqi")
 
-    di = DarwinInterface()
+    # di = DarwinInterface()
     # exec_darwin_demo(di)
     # di.listen_for_console_input()
 
-    # pr2i = PR2Interface()
-    # exec_pr2_demo(pr2i)
+    pr2i = PR2Interface()
+    exec_pr2_demo(pr2i)
     # pr2i.listen_for_console_input()
 
     rospy.spin()
