@@ -259,7 +259,7 @@
         <visual name='visual'>
           <geometry>
             <mesh>
-              <uri>model://kitchen_dining/meshes/kitchen_open.dae</uri>
+              <uri>model://kitchen_dining_open/meshes/kitchen_open.dae</uri>
             </mesh>
           </geometry>
         </visual>
