@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import rospy
 import inspect
+import argparse
 
 from ros_cqi.darwin_interface import DarwinInterface
 from ros_cqi.pr2_interface import PR2Interface
@@ -33,16 +34,19 @@ def exec_darwin_demo(di):
 
 
 if __name__ == "__main__":
- 
+    parser = argparse.ArgumentParser()
+    parser.parse_args()
+    parser.add_argument("robot", help="Specify the robot type to use", choices=["pr2", "darwin"])
     rospy.init_node("cqi")
-
-    # di = DarwinInterface()
-    # exec_darwin_demo(di)
-    # di.listen_for_console_input()
-
-    pr2i = PR2Interface()
-    exec_pr2_demo(pr2i)
-    # pr2i.listen_for_console_input()
+    
+    if parser.args.robot == "darwin":
+        di = DarwinInterface()
+        # exec_darwin_demo(di)
+        # di.listen_for_console_input()
+    else if parser.args.robot == "pr2":
+        pr2i = PR2Interface()
+        # exec_pr2_demo(pr2i)
+        # pr2i.listen_for_console_input()
 
     rospy.spin()
     

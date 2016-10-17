@@ -1,0 +1,22 @@
+<launch>
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+      <!--<arg name="world_name" value="$(find ros_cqi)/worlds/indoor_darwin_kitchen_no_model.world"/>-->
+      <arg name="world_name" value="$(find ros_cqi)/worlds/indoor_darwin_kitchen.world"/>
+  </include>
+  <param name="robot_description" textfile="$(find darwin_description)/urdf/darwin.urdf" />
+
+  <node name="spawn_darwin"
+        pkg="gazebo_ros"
+        type="spawn_model"
+        args="-file $(find darwin_description)/urdf/darwin.urdf
+              -urdf
+              -model darwin
+              -x 3.5
+              -y 6.5
+              -z 0.3417
+              -Y 3.14" />
+
+  <include file="$(find darwin_control)/launch/darwin_control.launch"/>
+
+  <node name="darwin_walker" pkg="darwin_gazebo" type="walker.py" />
+</launch>
